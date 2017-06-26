@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/main_bg">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="14dp"
+        android:text="应用管理"
+        android:drawablePadding="10dp"
+        android:drawableLeft="@drawable/manager_icon"
+        android:textColor="#007C8C"/>
+    <LinearLayout
+        android:id="@+id/app_layout"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:orientation="horizontal">
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:background="@color/transparent"
+            >
+            <android.support.v4.view.ViewPager
+                android:id="@+id/viewPager"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                />
+            <LinearLayout
+                android:id="@+id/points"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:layout_marginBottom="10dp"
+                android:gravity="center"
+                android:orientation="horizontal"
+                />
+        </RelativeLayout>
+        <ImageButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="14dp"
+            android:background="@color/transparent"
+            android:src="@drawable/download_icon"/>
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="14dp"
+        android:text="系统应用管理"
+        android:drawablePadding="10dp"
+        android:drawableLeft="@drawable/manager_icon"
+        android:textColor="#007C8C"/>
+     <LinearLayout
+         android:id="@+id/sys_layout"
+         android:layout_below="@id/app_layout"
+         android:layout_width="match_parent"
+         android:layout_height="100dp"
+         android:orientation="horizontal">
+
+         <RelativeLayout
+
+             android:layout_width="0dp"
+             android:layout_weight="1"
+             android:layout_height="match_parent"
+             android:background="@color/transparent"
+             >
+             <android.support.v4.view.ViewPager
+                 android:id="@+id/sys_viewPager"
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 />
+             <LinearLayout
+                 android:id="@+id/sys_points"
+                 android:layout_width="match_parent"
+                 android:layout_height="wrap_content"
+                 android:layout_alignParentBottom="true"
+                 android:layout_marginBottom="10dp"
+                 android:gravity="center"
+                 android:orientation="horizontal"
+                 />
+         </RelativeLayout>
+         <ImageButton
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_marginRight="14dp"
+             android:layout_alignParentBottom="true"
+             android:layout_alignParentRight="true"
+             android:background="@color/transparent"
+             android:src="@drawable/home_icon"/>
+
+     </LinearLayout>
+
+
+
+</LinearLayout>

@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#b0000000"
+    android:id="@+id/dialogView"
+    >
+<LinearLayout
+    android:id="@+id/dialog_content"
+    android:orientation="vertical"
+    android:layout_width="300dp"
+    android:layout_height="wrap_content"
+    android:background="@color/white"
+    android:layout_centerHorizontal="true"
+    android:layout_marginTop="10dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:background="#CDE2E6"
+        >
+        <ImageView
+            android:layout_width="14dp"
+            android:layout_height="14dp"
+            android:src="@drawable/cha"
+            android:id="@+id/iv_close"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:scaleType="center"
+            android:layout_marginLeft="14dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="请输入密码进入桌面管理"
+            android:textSize="14sp"
+            android:textColor="#222222"/>
+    </RelativeLayout>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/xian"/>
+    <TextView
+        android:id="@+id/tv_tradeType"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="20dp"
+        android:text="请输入密码"
+        android:textSize="13sp"
+        android:textColor="#222222"/>
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/xian"/>
+
+    <appmanager.com.appmanager.view.gridpasswordview.GridPasswordView
+        android:id="@+id/pswView"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginBottom="14dp"
+        android:layout_marginLeft="14dp"
+        android:layout_marginRight="14dp"
+        android:layout_marginTop="14dp"
+        app:gpvTextColor="@color/black"
+        app:gpvTextSize="25sp"
+        app:gpvLineColor="@color/dark_gray"
+        app:gpvLineWidth="1dp"
+        app:gpvGridColor="@color/white"
+        app:gpvPasswordLength="6"
+        app:gpvPasswordType="numberPassword"/>
+        />
+
+</LinearLayout>
+
+</RelativeLayout>

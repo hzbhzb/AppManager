@@ -2,6 +2,7 @@ package appmanager.com.appmanager;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -25,6 +26,8 @@ import java.util.List;
 import appmanager.com.appmanager.adapter.MyGridViewAdapter;
 import appmanager.com.appmanager.adapter.MyViewPagerAdapter;
 import appmanager.com.appmanager.bean.ApkBean;
+import appmanager.com.appmanager.bean.GetApksResult;
+import appmanager.com.appmanager.multithreaddownload.demo.ui.activity.AppListActivity;
 import appmanager.com.appmanager.net.NetRequestLisener;
 import appmanager.com.appmanager.net.NetRequestUtils;
 import appmanager.com.appmanager.view.gridpasswordview.GridPasswordView;
@@ -97,22 +100,21 @@ public class MainActivity extends AppCompatActivity {
         NetRequestUtils.callMetroNetRequestPost(new NetRequestLisener() {
             @Override
             public void success(String result) {
-                try {
-                    apkListResponse = new ArrayList<ApkResponse>();
-                    JSONArray jsonArray = new JSONArray(result);
-                    for(int i = 0; i < jsonArray.length(); i++) {
-                        ApkResponse response;
-                        Gson gson = new Gson();
-                        response = gson.fromJson(jsonArray.get(i).toString(), ApkResponse.class);
-                        apkListResponse.add(response);
-                    }
-                    setDatas();
-                    initPages();
-                    System.out.println("size===" + apkListResponse.size());
-                    System.out.println("vername====" + apkListResponse.get(0).getVerName());
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+                Gson gson = new Gson();
+                GetApksResult getApksResult = gson.fromJson(result, GetApksResult.class);
+                apkListResponse = getApksResult.getData();
+//                    apkListResponse = new ArrayList<ApkResponse>();
+//                    JSONArray jsonArray = new JSONArray(result);
+//                    for(int i = 0; i < jsonArray.length(); i++) {
+//                        ApkResponse response;
+//                        Gson gson = new Gson();
+//                        response = gson.fromJson(jsonArray.get(i).toString(), ApkResponse.class);
+//                        apkListResponse.add(response);
+//                    }
+                setDatas();
+                initPages();
+                System.out.println("size===" + apkListResponse.size());
+                System.out.println("vername====" + apkListResponse.get(0).getVerName());
 
             }
 
@@ -123,7 +125,11 @@ public class MainActivity extends AppCompatActivity {
         });
 
     }
-
+    public void goAppList(View v) {
+        Intent intent = new Intent(MainActivity.this, AppListActivity.class);
+        intent.putExtra("EXTRA_TYPE", AppListActivity.TYPE.TYPE_LISTVIEW);
+        startActivity(intent);
+    }
     private void iniViews() {
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         //初始化小圆点指示器
@@ -136,8 +142,8 @@ public class MainActivity extends AppCompatActivity {
         listDatas = new ArrayList<>();
         sys_listDatas = new ArrayList<>();
         for(int i=0; i<apkListResponse.size(); i++){
-            listDatas.add(new ApkBean(apkListResponse.get(i).getTypeName(), apkListResponse.get(i).getIcon()));
-            sys_listDatas.add(new ApkBean(apkListResponse.get(i).getTypeName(), apkListResponse.get(i).getIcon()));
+            listDatas.add(new ApkBean(apkListResponse.get(i).getName(), apkListResponse.get(i).getLogo()));
+            sys_listDatas.add(new ApkBean(apkListResponse.get(i).getName(), apkListResponse.get(i).getLogo()));
         }
         listDatas.addAll(listDatas);
         //sys_listDatas.addAll(sys_listDatas);

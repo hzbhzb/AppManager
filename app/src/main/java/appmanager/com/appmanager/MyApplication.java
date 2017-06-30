@@ -1,9 +1,14 @@
 package appmanager.com.appmanager;
 
 import android.app.Application;
+import android.content.Context;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
+import com.aspsine.multithreaddownload.DownloadConfiguration;
+import com.aspsine.multithreaddownload.DownloadManager;
+
+import appmanager.com.appmanager.multithreaddownload.demo.CrashHandler;
 
 /**
  * Created by huangzhebin on 2017/6/16.
@@ -13,12 +18,27 @@ public class MyApplication extends Application {
 
     private static RequestQueue requestQueue;
     public static int memoryCacheSize;
+    public static Context sContext;
 
     @Override
     public void onCreate() {
         super.onCreate();
         requestQueue = Volley.newRequestQueue(getApplicationContext());
         memoryCacheSize = getMemoryCacheSize();
+        sContext = getApplicationContext();
+        initDownloader();
+        CrashHandler.getInstance(sContext);
+    }
+
+    private void initDownloader() {
+        DownloadConfiguration configuration = new DownloadConfiguration();
+        configuration.setMaxThreadNum(10);
+        configuration.setThreadNum(3);
+        DownloadManager.getInstance().init(getApplicationContext(), configuration);
+    }
+
+    public static Context getContext() {
+        return sContext;
     }
     public static RequestQueue getRequestQueue() {
 

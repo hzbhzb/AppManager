@@ -5,6 +5,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.GET_TASKS"/>
 
     <application
         android:name=".MyApplication"
@@ -13,7 +14,8 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity"
+        <activity
+            android:name=".MainActivity"
             android:screenOrientation="landscape">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -22,10 +24,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:screenOrientation="landscape"
             android:name=".multithreaddownload.demo.ui.activity.AppListActivity"
-            android:label="@string/title_activity_app_detail"/>
-        <service android:name=".multithreaddownload.demo.service.DownloadService"/>
+            android:label="@string/title_activity_app_detail"
+            android:screenOrientation="landscape" />
+
+        <service android:name=".multithreaddownload.demo.service.DownloadService" />
         <service
             android:name=".multithreaddownload.demo.service.MyAccessibilityService"
             android:label="我的智能安装"
@@ -38,6 +41,9 @@
                 android:name="android.accessibilityservice"
                 android:resource="@xml/accessibility_service_config" />
         </service>
+
+        <activity android:name=".AppManagerActivity"
+            android:screenOrientation="landscape"></activity>
     </application>
 
 </manifest>

@@ -8,7 +8,8 @@ import com.android.volley.toolbox.Volley;
 import com.aspsine.multithreaddownload.DownloadConfiguration;
 import com.aspsine.multithreaddownload.DownloadManager;
 
-import appmanager.com.appmanager.multithreaddownload.demo.CrashHandler;
+import appmanager.com.appmanager.utils.CrashHandler;
+
 
 /**
  * Created by huangzhebin on 2017/6/16.
@@ -26,8 +27,9 @@ public class MyApplication extends Application {
         requestQueue = Volley.newRequestQueue(getApplicationContext());
         memoryCacheSize = getMemoryCacheSize();
         sContext = getApplicationContext();
+        CrashHandler.getInstance().init(this);
         initDownloader();
-        CrashHandler.getInstance(sContext);
+        //CrashHandler.getInstance(sContext);
     }
 
     private void initDownloader() {

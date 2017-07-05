@@ -26,10 +26,6 @@ import android.widget.ListView;
 import com.aspsine.multithreaddownload.DownloadInfo;
 import com.aspsine.multithreaddownload.DownloadManager;
 import com.google.gson.Gson;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,14 +38,14 @@ import appmanager.com.appmanager.multithreaddownload.demo.DataSource;
 import appmanager.com.appmanager.multithreaddownload.demo.entity.AppInfo;
 import appmanager.com.appmanager.multithreaddownload.demo.listener.OnItemClickListener;
 import appmanager.com.appmanager.multithreaddownload.demo.service.DownloadService;
-import appmanager.com.appmanager.multithreaddownload.demo.ui.activity.AppListActivity;
+
 import appmanager.com.appmanager.multithreaddownload.demo.ui.adapter.ListViewAdapter;
-import appmanager.com.appmanager.multithreaddownload.demo.ui.fragment.ListViewFragment;
 import appmanager.com.appmanager.multithreaddownload.demo.util.Utils;
 import appmanager.com.appmanager.net.NetRequestLisener;
 import appmanager.com.appmanager.net.NetRequestUtils;
 import appmanager.com.appmanager.view.gridpasswordview.GridPasswordView;
-import appmanager.com.appmanager.view.gridpasswordview.Util;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MainActivity extends AppCompatActivity implements OnItemClickListener<AppInfo> {
 
@@ -82,6 +78,8 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
+        Logger log = LoggerFactory.getLogger(MainActivity.class);
+        log.info("hello world");
         dialog = new Dialog(this,
                 android.R.style.Theme_Translucent_NoTitleBar);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -110,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         //dialog.show();
 
         //初始化控件
-        iniViews();
+        initViews();
 
         NetRequestUtils.callMetroNetRequestPost(new NetRequestLisener() {
             @Override
@@ -139,7 +137,13 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
 //        intent.putExtra("EXTRA_TYPE", AppListActivity.TYPE.TYPE_LISTVIEW);
 //        startActivity(intent);
     }
-    private void iniViews() {
+
+    public void goAllApp(View v) {
+        Intent intent = new Intent(MainActivity.this, AppManagerActivity.class);
+        //intent.putExtra("EXTRA_TYPE", AppListActivity.TYPE.TYPE_LISTVIEW);
+        startActivity(intent);
+    }
+    private void initViews() {
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         //初始化小圆点指示器
         points = (ViewGroup) findViewById(R.id.points);

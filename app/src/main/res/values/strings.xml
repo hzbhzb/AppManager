@@ -5,4 +5,6 @@
     <string name="Error">Error</string>
     <string name="Complete">Complete</string>
     <string name="title_activity_app_detail">AppDetailActivity</string>
+    <string name="accessibility_service_description">智能安装服务，无需用户的任何操作就可以自动安装程序。</string>
+
 </resources>

@@ -22,6 +22,7 @@ public class AppInfo implements Serializable {
     private String url;
     private int progress;
     private String downloadPerSize;
+    private String verCode;
     private int status;
 
     public AppInfo() {
@@ -32,6 +33,14 @@ public class AppInfo implements Serializable {
         this.id = id;
         this.image = image;
         this.url = url;
+    }
+
+    public String getVerCode() {
+        return verCode;
+    }
+
+    public void setVerCode(String verCode) {
+        this.verCode = verCode;
     }
 
     public String getName() {

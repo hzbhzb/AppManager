@@ -57,6 +57,7 @@ public class ListViewFragment extends Fragment implements OnItemClickListener<Ap
         mAdapter = new ListViewAdapter();
         mAdapter.setOnItemClickListener(this);
         mAppInfos = DataSource.getInstance().getData();
+        System.out.println("mAppInfos size==" + mAppInfos.size());
         for (AppInfo info : mAppInfos) {
             DownloadInfo downloadInfo = DownloadManager.getInstance().getDownloadInfo(info.getUrl());
             if (downloadInfo != null) {

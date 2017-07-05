@@ -16,13 +16,13 @@
 
         <ImageView
             android:id="@+id/ivIcon"
-            android:layout_width="80dp"
-            android:layout_height="80dp" />
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
 
         <RelativeLayout
             android:id="@+id/rl"
             android:layout_width="wrap_content"
-            android:layout_height="40dp"
+            android:layout_height="45dp"
             android:layout_marginLeft="16dp"
             android:layout_toRightOf="@+id/ivIcon">
 
@@ -34,6 +34,17 @@
                 android:layout_toLeftOf="@+id/btnDownload"
                 android:ellipsize="end"
                 android:text="App"
+                android:textAppearance="?android:textAppearanceMedium" />
+            <TextView
+                android:id="@+id/tvVerCode"
+                android:layout_below="@id/tvName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_toLeftOf="@+id/btnDownload"
+                android:ellipsize="end"
+                android:textSize="10sp"
+                android:text="v2.0.1"
                 android:textAppearance="?android:textAppearanceMedium" />
 
             <Button
@@ -48,7 +59,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="32dp"
             android:layout_alignParentRight="true"
             android:layout_below="@+id/rl"
             android:layout_marginLeft="16dp"
@@ -75,7 +86,7 @@
                 android:id="@+id/progressBar"
                 style="@style/Widget.AppCompat.ProgressBar.Horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="10dp"
+                android:layout_height="2dp"
                 android:layout_alignParentBottom="true"
                 android:max="100" />
         </RelativeLayout>

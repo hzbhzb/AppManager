@@ -10,10 +10,18 @@ public class ApkBean implements Serializable {
 
     private String proName;
     private String imgUrl;
+    private String downUrl;
 
-    public ApkBean(String proName, String imgUrl) {
-        this.proName = proName;
-        this.imgUrl = imgUrl;
+    public String getDownUrl() {
+        return downUrl;
+    }
+
+    public void setDownUrl(String downUrl) {
+        this.downUrl = downUrl;
+    }
+
+    public ApkBean() {
+
     }
 
     public String getProName() {

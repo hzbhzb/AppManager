@@ -5,6 +5,10 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.provider.Settings;
+import android.util.DisplayMetrics;
+import android.view.View;
+import android.view.WindowManager;
 
 import com.aspsine.multithreaddownload.util.ListUtils;
 
@@ -29,7 +33,10 @@ public class Utils {
         intent.setDataAndType(Uri.fromFile(file), "application/vnd.android.package-archive");
         context.startActivity(intent);
     }
-
+    public static void onForwardToAccessibility(Context context) {
+        Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
+        context.startActivity(intent);
+    }
     public static void unInstallApp(Context context, String packageName) {
         Uri packageUri = Uri.parse("package:" + packageName);
         Intent intent = new Intent(Intent.ACTION_DELETE, packageUri);
@@ -57,4 +64,21 @@ public class Utils {
         }
         return false;
     }
+    public static int getScreenHeight(Context context)
+    {
+        WindowManager wm = (WindowManager) context
+                .getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        wm.getDefaultDisplay().getMetrics(outMetrics);
+        return outMetrics.heightPixels;
+    }
+    public static int getScreenWidth(Context context)
+    {
+        WindowManager wm = (WindowManager) context
+                .getSystemService(Context.WINDOW_SERVICE);
+        DisplayMetrics outMetrics = new DisplayMetrics();
+        wm.getDefaultDisplay().getMetrics(outMetrics);
+        return outMetrics.widthPixels;
+    }
+
 }

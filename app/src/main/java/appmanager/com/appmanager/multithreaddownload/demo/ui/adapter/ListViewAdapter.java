@@ -71,6 +71,7 @@ public class ListViewAdapter extends BaseAdapter {
         }
         final AppInfo appInfo = mAppInfos.get(position);
         holder.tvName.setText(appInfo.getName());
+        holder.tvVerCode.setText(String.format("版本号: %s", appInfo.getVerCode()));
         holder.tvDownloadPerSize.setText(appInfo.getDownloadPerSize());
         holder.tvStatus.setText(appInfo.getStatusText());
         holder.progressBar.setProgress(appInfo.getProgress());
@@ -84,14 +85,14 @@ public class ListViewAdapter extends BaseAdapter {
                 }
             }
         });
-        convertView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), AppDetailActivity.class);
-                intent.putExtra("EXTRA_APPINFO", mAppInfos.get(position));
-                v.getContext().startActivity(intent);
-            }
-        });
+//        convertView.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                Intent intent = new Intent(v.getContext(), AppDetailActivity.class);
+//                intent.putExtra("EXTRA_APPINFO", mAppInfos.get(position));
+//                v.getContext().startActivity(intent);
+//            }
+//        });
         return convertView;
     }
 
@@ -102,6 +103,8 @@ public class ListViewAdapter extends BaseAdapter {
 
         @Bind(R.id.tvName)
         public TextView tvName;
+        @Bind(R.id.tvVerCode)
+        public TextView tvVerCode;
 
         @Bind(R.id.btnDownload)
         public Button btnDownload;

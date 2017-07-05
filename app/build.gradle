@@ -28,4 +28,11 @@ dependencies {
     testCompile 'junit:junit:4.12'
     compile files('libs/volley.jar')
     compile files('libs/gson-2.2.4.jar')
+    compile files('libs/commons-logging-1.1.3.jar')
+    compile files('libs/cn.cydl.dlj.codec-1.10.jar')
+    compile 'com.android.support:recyclerview-v7:23.0.0'
+    compile 'com.android.support:cardview-v7:23.0.0'
+    compile 'com.jakewharton:butterknife:7.0.1'
+    compile 'com.squareup.picasso:picasso:2.5.2'
+    compile project(':mylibrary')
 }

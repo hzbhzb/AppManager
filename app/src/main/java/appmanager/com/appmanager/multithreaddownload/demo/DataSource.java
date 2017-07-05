@@ -6,6 +6,8 @@ package appmanager.com.appmanager.multithreaddownload.demo;
 import java.util.ArrayList;
 import java.util.List;
 
+import appmanager.com.appmanager.ApkResponse;
+import appmanager.com.appmanager.bean.ApkBean;
 import appmanager.com.appmanager.multithreaddownload.demo.entity.AppInfo;
 
 /**
@@ -14,6 +16,7 @@ import appmanager.com.appmanager.multithreaddownload.demo.entity.AppInfo;
 public class DataSource {
 
     private static DataSource sDataSource = new DataSource();
+    List<ApkResponse> apkListResponse;
 
     private static final String[] NAMES = {
             "网易云音乐",
@@ -63,10 +66,16 @@ public class DataSource {
 
     public List<AppInfo> getData() {
         List<AppInfo> appInfos = new ArrayList<AppInfo>();
-        for (int i = 0; i < NAMES.length; i++) {
-            AppInfo appInfo = new AppInfo(String.valueOf(i), NAMES[i], IMAGES[i], URLS[i]);
+        for (int i = 0; i < apkListResponse.size(); i++) {
+            AppInfo appInfo = new AppInfo(String.valueOf(i), apkListResponse.get(i).getName(), apkListResponse.get(i).getLogo(), apkListResponse.get(i).getPath());
+            appInfo.setVerCode(apkListResponse.get(i).getVerName());
+            appInfo.setPackageName(apkListResponse.get(i).getPkg());
+
             appInfos.add(appInfo);
         }
         return appInfos;
+    }
+    public void setData(List<ApkResponse> apkListResponse) {
+        this.apkListResponse = apkListResponse;
     }
 }

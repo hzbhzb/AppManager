@@ -140,6 +140,8 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
 
     public void goAllApp(View v) {
         Intent intent = new Intent(MainActivity.this, AppManagerActivity.class);
+        Bundle bundle = new Bundle();
+        bundle.putParcelableArrayList("appInfos", apkListResponse);
         //intent.putExtra("EXTRA_TYPE", AppListActivity.TYPE.TYPE_LISTVIEW);
         startActivity(intent);
     }

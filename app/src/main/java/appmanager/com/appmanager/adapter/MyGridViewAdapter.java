@@ -73,6 +73,8 @@ public class MyGridViewAdapter extends BaseAdapter {
             holder.imgUrl.setDefaultImageResId(R.mipmap.ic_launcher);
             // 设置图片加载失败后显示的图片
             holder.imgUrl.setErrorImageResId(R.drawable.error_photo);
+            holder.imgUrl.setVisibility(View.VISIBLE);
+            ((ImageView)convertView.findViewById(R.id.imgUrl1)).setVisibility(View.GONE);
             convertView.setTag(holder);
             //重新确定position（因为拿到的是总的数据源，数据源是分页加载到每页的GridView上的，为了确保能正确的点对不同页上的item）
             final int pos = position + mIndex*mPagerSize;//假设mPagerSize=8，假如点击的是第二页（即mIndex=1）上的第二个位置item(position=1),那么这个item的实际位置就是pos=9

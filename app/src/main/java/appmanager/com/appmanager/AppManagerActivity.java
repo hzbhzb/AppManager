@@ -1,8 +1,10 @@
 package appmanager.com.appmanager;
 
+import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
@@ -12,6 +14,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -63,6 +66,8 @@ public class AppManagerActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_app_manager);
         initViews();
     }
@@ -85,61 +90,42 @@ public class AppManagerActivity extends AppCompatActivity {
 
         PackageManager packageManager = getPackageManager();
         listDatas = new ArrayList<LocalAppInfo>();
+        Intent intent = new Intent();
+        intent.addCategory(Intent.CATEGORY_LAUNCHER);
+        intent.setAction(Intent.ACTION_MAIN);
+
+        PackageManager manager = getPackageManager();
+        List<ResolveInfo> resolveInfoList = manager.queryIntentActivities(intent, 0);
         LocalAppInfo myAppInfo;
         //获取到所有安装了的应用程序的信息，包括那些卸载了的，但没有清除数据的应用程序
         List<PackageInfo> packageInfos = packageManager.getInstalledPackages(PackageManager.GET_UNINSTALLED_PACKAGES);
-        for(PackageInfo info:packageInfos){
+        for(ResolveInfo info:resolveInfoList){
             myAppInfo = new LocalAppInfo();
             //拿到包名
-            String packageName = info.packageName;
+            String packageName = info.resolvePackageName;
             //拿到应用程序的信息
-            ApplicationInfo appInfo = info.applicationInfo;
+            //ApplicationInfo appInfo = info.;
             //拿到应用程序的图标
-            Drawable icon = appInfo.loadIcon(packageManager);
+            Drawable icon = info.loadIcon(manager);
             //拿到应用程序的大小
             //long codesize = packageStats.codeSize;
             //Log.i("info", "-->"+codesize);
             //拿到应用程序的程序名
-            String appName = appInfo.loadLabel(packageManager).toString();
+            String appName = info.loadLabel(packageManager).toString();
 
             myAppInfo.setPackageName(packageName);
             myAppInfo.setAppName(appName);
             myAppInfo.setIcon(icon);
-
-            if(filterApp(appInfo)){
-                myAppInfo.setSystemApp(false);
-            }else{
-                myAppInfo.setSystemApp(true);
-            }
+            myAppInfo.setIconResId(info.getIconResource());
+            myAppInfo.setSystemApp(true);
+//            if(filterApp(info)){
+//                myAppInfo.setSystemApp(false);
+//            }else{
+//                myAppInfo.setSystemApp(true);
+//            }
             listDatas.add(myAppInfo);
         }
     }
-
-    //判断某一个应用程序是不是系统的应用程序，如果是返回true，否则返回false
-    public boolean filterApp(ApplicationInfo info){
-        //有些系统应用是可以更新的，如果用户自己下载了一个系统的应用来更新了原来的，它还是系统应用，这个就是判断这种情况的
-        if((info.flags & ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) != 0){
-            return true;
-        }else if((info.flags & ApplicationInfo.FLAG_SYSTEM) == 0){//判断是不是系统应用
-            return true;
-        }
-        return false;
-    }
-
-//    private void setDatas() {
-//        listDatas = new ArrayList<>();
-//        for(int i=0; i<apkListResponse.size(); i++){
-//            ApkBean apkBean = new ApkBean();
-//            apkBean.setDownUrl(apkListResponse.get(i).getPath());
-//            apkBean.setImgUrl(apkListResponse.get(i).getLogo());
-//            apkBean.setProName(apkListResponse.get(i).getName());
-//            listDatas.add(apkBean);
-//
-//        }
-//        listDatas.addAll(listDatas);
-//        //sys_listDatas.addAll(sys_listDatas);
-//    }
-
 
     /**
      * 改变点点点的切换效果

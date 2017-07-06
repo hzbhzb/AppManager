@@ -1,10 +1,12 @@
 package appmanager.com.appmanager.adapter;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -69,6 +71,7 @@ public class LocalGridViewAdapter extends BaseAdapter {
             holder = new LocalGridViewAdapter.ViewHolder();
             holder.proName = (TextView) convertView.findViewById(R.id.proName);
             holder.imgUrl = (NetworkImageView) convertView.findViewById(R.id.imgUrl);
+            holder.imageView = (ImageView) convertView.findViewById(R.id.imgUrl1);
             // 设置默认的图片
             //holder.imgUrl.setDefaultImageResId(R.mipmap.ic_launcher);
             // 设置图片加载失败后显示的图片
@@ -78,11 +81,20 @@ public class LocalGridViewAdapter extends BaseAdapter {
             final int pos = position + mIndex*mPagerSize;//假设mPagerSize=8，假如点击的是第二页（即mIndex=1）上的第二个位置item(position=1),那么这个item的实际位置就是pos=9
             LocalAppInfo localAppInfo = listData.get(pos);
             holder.proName.setText(localAppInfo.getAppName());
-            //if (localAppInfo.isSystemApp()) {
-                holder.imgUrl.setImageDrawable(localAppInfo.getIcon());
-            //} else {
-            //    holder.imgUrl.setImageUrl(localAppInfo.getIconUrl(), mImageLoader);
-            //}
+            if (localAppInfo.isSystemApp()) {
+                //holder.imgUrl.setDefaultImageResId(localAppInfo.getIconResId());
+                holder.imageView.setImageDrawable(localAppInfo.getIcon());
+                holder.imgUrl.setVisibility(View.GONE);
+                holder.imageView.setVisibility(View.VISIBLE);
+            } else {
+                // 设置默认的图片
+                holder.imgUrl.setDefaultImageResId(R.mipmap.ic_launcher);
+                // 设置图片加载失败后显示的图片
+                holder.imgUrl.setErrorImageResId(R.drawable.error_photo);
+                holder.imgUrl.setImageUrl(localAppInfo.getIconUrl(), mImageLoader);
+                holder.imageView.setVisibility(View.GONE);
+                holder.imgUrl.setVisibility(View.VISIBLE);
+            }
 
             //
             //添加item监听
@@ -102,5 +114,6 @@ public class LocalGridViewAdapter extends BaseAdapter {
     class ViewHolder{
         private TextView proName;
         private NetworkImageView imgUrl;
+        private ImageView imageView;
     }
 }

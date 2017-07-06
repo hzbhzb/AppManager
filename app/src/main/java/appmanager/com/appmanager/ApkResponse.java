@@ -1,10 +1,13 @@
 package appmanager.com.appmanager;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by huangzhebin on 2017/6/16.
  */
 
-public class ApkResponse {
+public class ApkResponse implements Parcelable {
 
     /**
      * type : DLJ
@@ -35,6 +38,34 @@ public class ApkResponse {
     private String md5;
     private String time;
     private String rmk;
+
+    protected ApkResponse(Parcel in) {
+        type = in.readString();
+        typeName = in.readString();
+        dtype = in.readString();
+        dtypeName = in.readString();
+        name = in.readString();
+        pkg = in.readString();
+        ver = in.readString();
+        verName = in.readString();
+        path = in.readString();
+        logo = in.readString();
+        md5 = in.readString();
+        time = in.readString();
+        rmk = in.readString();
+    }
+
+    public static final Creator<ApkResponse> CREATOR = new Creator<ApkResponse>() {
+        @Override
+        public ApkResponse createFromParcel(Parcel in) {
+            return new ApkResponse(in);
+        }
+
+        @Override
+        public ApkResponse[] newArray(int size) {
+            return new ApkResponse[size];
+        }
+    };
 
     public String getType() {
         return type;
@@ -138,5 +169,27 @@ public class ApkResponse {
 
     public void setRmk(String rmk) {
         this.rmk = rmk;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(type);
+        dest.writeString(typeName);
+        dest.writeString(dtype);
+        dest.writeString(dtypeName);
+        dest.writeString(name);
+        dest.writeString(pkg);
+        dest.writeString(ver);
+        dest.writeString(verName);
+        dest.writeString(path);
+        dest.writeString(logo);
+        dest.writeString(md5);
+        dest.writeString(time);
+        dest.writeString(rmk);
     }
 }

@@ -22,6 +22,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.aspsine.multithreaddownload.DownloadInfo;
 import com.aspsine.multithreaddownload.DownloadManager;
@@ -116,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
                 Gson gson = new Gson();
                 GetApksResult getApksResult = gson.fromJson(result, GetApksResult.class);
                 apkListResponse = getApksResult.getData();
-
+                MyApplication.apkResponseList = apkListResponse;
                 setDatas();
                 initPages();
                 System.out.println("size===" + apkListResponse.size());
@@ -141,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
     public void goAllApp(View v) {
         Intent intent = new Intent(MainActivity.this, AppManagerActivity.class);
         Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList("appInfos", apkListResponse);
+        //bundle.putParcelableArrayList("appInfos", apkListResponse);
         //intent.putExtra("EXTRA_TYPE", AppListActivity.TYPE.TYPE_LISTVIEW);
         startActivity(intent);
     }
@@ -340,6 +341,9 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         mReceiver = new MainActivity.DownloadReceiver();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(DownloadService.ACTION_DOWNLOAD_BROAD_CAST);
+        intentFilter.addAction("android.intent.action.PACKAGE_ADDED");
+        intentFilter.addAction("android.intent.action.PACKAGE_REMOVED");
+        intentFilter.addDataScheme("package");
         LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver, intentFilter);
     }
 
@@ -363,6 +367,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
 
     private void install(AppInfo appInfo) {
         Utils.installApp(this, new File(mDownloadDir, appInfo.getName() + ".apk"));
+       // Utils.onForwardToAccessibility(this);
     }
 
     private void unInstall(AppInfo appInfo) {
@@ -374,6 +379,18 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         @Override
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
+            //接收安装广播
+            if (intent.getAction().equals("android.intent.action.PACKAGE_ADDED")) {
+                String packageName = intent.getDataString();
+                Toast.makeText(MainActivity.this, "安装了:" +packageName + "包名的程序", Toast.LENGTH_SHORT).show();
+                System.out.println("安装了 :" + packageName);
+            }
+            //接收卸载广播
+            if (intent.getAction().equals("android.intent.action.PACKAGE_REMOVED")) {
+                String packageName = intent.getDataString();
+                Toast.makeText(MainActivity.this, "卸载了:"  + packageName + "包名的程序", Toast.LENGTH_SHORT).show();
+                System.out.println( "卸载了 :" + packageName);
+            }
             if (action == null || !action.equals(DownloadService.ACTION_DOWNLOAD_BROAD_CAST)) {
                 return;
             }

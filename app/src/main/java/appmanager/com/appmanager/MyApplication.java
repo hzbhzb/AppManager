@@ -8,6 +8,8 @@ import com.android.volley.toolbox.Volley;
 import com.aspsine.multithreaddownload.DownloadConfiguration;
 import com.aspsine.multithreaddownload.DownloadManager;
 
+import java.util.List;
+
 import appmanager.com.appmanager.utils.CrashHandler;
 
 
@@ -20,6 +22,7 @@ public class MyApplication extends Application {
     private static RequestQueue requestQueue;
     public static int memoryCacheSize;
     public static Context sContext;
+    public static List<ApkResponse> apkResponseList;
 
     @Override
     public void onCreate() {
@@ -49,7 +52,6 @@ public class MyApplication extends Application {
     /**
      * @description
      *
-     * @param context
      * @return 得到需要分配的缓存大小，这里用八分之一的大小来做
      */
     public int getMemoryCacheSize() {

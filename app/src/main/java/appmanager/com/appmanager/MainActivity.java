@@ -32,6 +32,7 @@ import java.util.List;
 
 import appmanager.com.appmanager.adapter.MyGridViewAdapter;
 import appmanager.com.appmanager.adapter.MyViewPagerAdapter;
+import appmanager.com.appmanager.bean.AdminPwdResponse;
 import appmanager.com.appmanager.bean.ApkBean;
 import appmanager.com.appmanager.bean.GetApksResult;
 import appmanager.com.appmanager.multithreaddownload.demo.DataSource;
@@ -80,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         setContentView(R.layout.activity_main);
         Logger log = LoggerFactory.getLogger(MainActivity.class);
         log.info("hello world");
+        getAdminPwd();
         dialog = new Dialog(this,
                 android.R.style.Theme_Translucent_NoTitleBar);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -110,13 +112,13 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         //初始化控件
         initViews();
 
-        NetRequestUtils.callMetroNetRequestPost(new NetRequestLisener() {
+        NetRequestUtils.callMetroNetRequestPost("apps", new NetRequestLisener() {
             @Override
             public void success(String result) {
                 Gson gson = new Gson();
                 GetApksResult getApksResult = gson.fromJson(result, GetApksResult.class);
                 apkListResponse = getApksResult.getData();
-
+                MyApplication.apkResponseList = apkListResponse;
                 setDatas();
                 initPages();
                 System.out.println("size===" + apkListResponse.size());
@@ -131,6 +133,23 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         });
 
     }
+
+    private void getAdminPwd() {
+        NetRequestUtils.callMetroNetRequestPost("pwds", new NetRequestLisener() {
+            @Override
+            public void success(String result) {
+                Gson gson = new Gson();
+                AdminPwdResponse adminPwdResponse = gson.fromJson(result, AdminPwdResponse.class);
+                System.out.println("admin pwds length == " + adminPwdResponse.getData().size());
+            }
+
+            @Override
+            public void error(String error) {
+
+            }
+        });
+    }
+
     public void goAppList(View v) {
         showListDialog();
 //        Intent intent = new Intent(MainActivity.this, AppListActivity.class);
@@ -140,8 +159,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
 
     public void goAllApp(View v) {
         Intent intent = new Intent(MainActivity.this, AppManagerActivity.class);
-        Bundle bundle = new Bundle();
-        bundle.putParcelableArrayList("appInfos", apkListResponse);
+
         //intent.putExtra("EXTRA_TYPE", AppListActivity.TYPE.TYPE_LISTVIEW);
         startActivity(intent);
     }
@@ -158,7 +176,11 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
             apkBean.setDownUrl(apkListResponse.get(i).getPath());
             apkBean.setImgUrl(apkListResponse.get(i).getLogo());
             apkBean.setProName(apkListResponse.get(i).getName());
-            listDatas.add(apkBean);
+            if (apkListResponse.get(i).getType().equals("DLJ")) {
+                MyApplication.apkPkgNames.add(apkListResponse.get(i).getPkg());
+                listDatas.add(apkBean);
+            }
+
 
         }
         listDatas.addAll(listDatas);

@@ -55,14 +55,14 @@ public class NetRequestUtils {
    };
 
 
-	public static void callMetroNetRequestPost(final NetRequestLisener listener) {
+	public static void callMetroNetRequestPost(String method, final NetRequestLisener listener) {
 
 
         String acc = "launcher_telpo";
 		String pwd = "appmanager.com";
 		WsParams ps = new WsParams();
 		String ts = String.valueOf(System.currentTimeMillis());
-		StringBuilder url = new StringBuilder("http://ws.test.dlj100.cn/app/launcher/apps?");////Config.metroUrl + "?p=" + URLEncoder.encode(p.get("p").replace(" ", "")) + "&appkey=" + URLEncoder.encode(p.get("appkey").replace(" ", "")) + "&token=" + token + "&sign=" + URLEncoder.encode(p.get("sign").replace(" ", ""));
+		StringBuilder url = new StringBuilder("http://ws.test.dlj100.cn/app/launcher/" + method + "?");////Config.metroUrl + "?p=" + URLEncoder.encode(p.get("p").replace(" ", "")) + "&appkey=" + URLEncoder.encode(p.get("appkey").replace(" ", "")) + "&token=" + token + "&sign=" + URLEncoder.encode(p.get("sign").replace(" ", ""));
 		encriptUtils = new EncriptUtils(url.toString(), acc, pwd);
 		url.append("a=" + acc + "&t=" + ts + "&s=" + encriptUtils.aesEncryp(ps.json(acc, ts)));
 		StringRequest stringRequest = new StringRequest(Method.GET, url.toString(),

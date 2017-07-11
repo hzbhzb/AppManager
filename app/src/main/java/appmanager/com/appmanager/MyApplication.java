@@ -8,6 +8,9 @@ import com.android.volley.toolbox.Volley;
 import com.aspsine.multithreaddownload.DownloadConfiguration;
 import com.aspsine.multithreaddownload.DownloadManager;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import appmanager.com.appmanager.utils.CrashHandler;
 
 
@@ -20,6 +23,8 @@ public class MyApplication extends Application {
     private static RequestQueue requestQueue;
     public static int memoryCacheSize;
     public static Context sContext;
+    public static List<ApkResponse> apkResponseList;
+    public static List<String> apkPkgNames = new ArrayList<>();
 
     @Override
     public void onCreate() {

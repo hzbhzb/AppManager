@@ -97,8 +97,7 @@ public class AppManagerActivity extends AppCompatActivity {
         PackageManager manager = getPackageManager();
         List<ResolveInfo> resolveInfoList = manager.queryIntentActivities(intent, 0);
         LocalAppInfo myAppInfo;
-        //获取到所有安装了的应用程序的信息，包括那些卸载了的，但没有清除数据的应用程序
-        List<PackageInfo> packageInfos = packageManager.getInstalledPackages(PackageManager.GET_UNINSTALLED_PACKAGES);
+
         for(ResolveInfo info:resolveInfoList){
             myAppInfo = new LocalAppInfo();
             //拿到包名
@@ -118,12 +117,14 @@ public class AppManagerActivity extends AppCompatActivity {
             myAppInfo.setIcon(icon);
             myAppInfo.setIconResId(info.getIconResource());
             myAppInfo.setSystemApp(true);
-//            if(filterApp(info)){
-//                myAppInfo.setSystemApp(false);
-//            }else{
-//                myAppInfo.setSystemApp(true);
-//            }
-            listDatas.add(myAppInfo);
+            if (!MyApplication.apkPkgNames.contains(myAppInfo.getPackageName())) {
+                listDatas.add(myAppInfo);
+            }
+
+
+        }
+        for (ApkResponse apkResponse : MyApplication.apkResponseList) {
+
         }
     }
 

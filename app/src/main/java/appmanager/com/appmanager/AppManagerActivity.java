@@ -11,6 +11,7 @@ import android.os.Message;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,6 +70,9 @@ public class AppManagerActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_app_manager);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("");
+        setSupportActionBar(toolbar);
         initViews();
     }
 
@@ -101,7 +105,7 @@ public class AppManagerActivity extends AppCompatActivity {
         for(ResolveInfo info:resolveInfoList){
             myAppInfo = new LocalAppInfo();
             //拿到包名
-            String packageName = info.resolvePackageName;
+            String packageName = info.activityInfo.packageName;
             //拿到应用程序的信息
             //ApplicationInfo appInfo = info.;
             //拿到应用程序的图标
@@ -118,6 +122,8 @@ public class AppManagerActivity extends AppCompatActivity {
             myAppInfo.setIconResId(info.getIconResource());
             myAppInfo.setSystemApp(true);
             if (!MyApplication.apkPkgNames.contains(myAppInfo.getPackageName())) {
+                System.out.println("不包含 " + packageName);
+
                 listDatas.add(myAppInfo);
             }
 

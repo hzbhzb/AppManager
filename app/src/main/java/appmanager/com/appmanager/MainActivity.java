@@ -12,6 +12,8 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -26,6 +28,7 @@ import android.widget.ListView;
 import com.aspsine.multithreaddownload.DownloadInfo;
 import com.aspsine.multithreaddownload.DownloadManager;
 import com.google.gson.Gson;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -45,6 +48,7 @@ import appmanager.com.appmanager.multithreaddownload.demo.util.Utils;
 import appmanager.com.appmanager.net.NetRequestLisener;
 import appmanager.com.appmanager.net.NetRequestUtils;
 import appmanager.com.appmanager.view.gridpasswordview.GridPasswordView;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,7 +74,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
     private ListViewAdapter mAdapter;
     ListView listView;
     private File mDownloadDir;
-
+    private String adminPwd;
     private MainActivity.DownloadReceiver mReceiver;
 
     @Override
@@ -79,6 +83,9 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("");
+        setSupportActionBar(toolbar);
         Logger log = LoggerFactory.getLogger(MainActivity.class);
         log.info("hello world");
         getAdminPwd();
@@ -95,6 +102,12 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
 
             @Override
             public void onInputFinish(String psw) {
+                if (!TextUtils.equals(psw, adminPwd)) {
+                    Intent intent = new Intent(MainActivity.this, AppManagerActivity.class);
+
+                    //intent.putExtra("EXTRA_TYPE", AppListActivity.TYPE.TYPE_LISTVIEW);
+                    startActivity(intent);
+                }
                 dialog.cancel();
                 pswView.clearPassword();
             }
@@ -140,6 +153,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
             public void success(String result) {
                 Gson gson = new Gson();
                 AdminPwdResponse adminPwdResponse = gson.fromJson(result, AdminPwdResponse.class);
+                adminPwd = adminPwdResponse.getData().get(0).getPwd();
                 System.out.println("admin pwds length == " + adminPwdResponse.getData().size());
             }
 
@@ -158,11 +172,9 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
     }
 
     public void goAllApp(View v) {
-        Intent intent = new Intent(MainActivity.this, AppManagerActivity.class);
-
-        //intent.putExtra("EXTRA_TYPE", AppListActivity.TYPE.TYPE_LISTVIEW);
-        startActivity(intent);
+        dialog.show();
     }
+
     private void initViews() {
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         //初始化小圆点指示器
@@ -171,7 +183,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
 
     private void setDatas() {
         listDatas = new ArrayList<>();
-        for(int i=0; i<apkListResponse.size(); i++){
+        for (int i = 0; i < apkListResponse.size(); i++) {
             ApkBean apkBean = new ApkBean();
             apkBean.setDownUrl(apkListResponse.get(i).getPath());
             apkBean.setImgUrl(apkListResponse.get(i).getLogo());
@@ -190,6 +202,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
 
     /**
      * 改变点点点的切换效果
+     *
      * @param selectItems
      */
     private void setImageBackground(int type, int selectItems) {
@@ -212,10 +225,10 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
 
         viewPagerList = new ArrayList<>();
 
-        for(int i=0;i<totalPage;i++){
+        for (int i = 0; i < totalPage; i++) {
             //每个页面都是inflate出一个新实例
-            GridView gridView = (GridView) inflater.inflate(R.layout.gridview_layout,viewPager,false);
-            gridView.setAdapter(new MyGridViewAdapter(this,listDatas,i,mPageSize));
+            GridView gridView = (GridView) inflater.inflate(R.layout.gridview_layout, viewPager, false);
+            gridView.setAdapter(new MyGridViewAdapter(this, listDatas, i, mPageSize));
             //添加item点击监听
             /*gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
@@ -235,20 +248,20 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         //小圆点指示器
         ivPoints = new ImageView[totalPage];
 
-        for(int i=0;i<ivPoints.length;i++){
+        for (int i = 0; i < ivPoints.length; i++) {
             ImageView imageView = new ImageView(this);
             //设置图片的宽高
-            imageView.setLayoutParams(new ViewGroup.LayoutParams(10,10));
-            if(i == 0){
+            imageView.setLayoutParams(new ViewGroup.LayoutParams(10, 10));
+            if (i == 0) {
                 imageView.setBackgroundResource(R.drawable.page__selected_indicator);
-            }else{
+            } else {
                 imageView.setBackgroundResource(R.drawable.page__normal_indicator);
             }
             ivPoints[i] = imageView;
             LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
             layoutParams.leftMargin = 20;//设置点点点view的左边距
             layoutParams.rightMargin = 20;//设置点点点view的右边距
-            points.addView(imageView,layoutParams);
+            points.addView(imageView, layoutParams);
         }
 
         //设置ViewPager滑动监听
@@ -263,7 +276,6 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
 
                 setImageBackground(0, position);
                 currentPage = position;
-
             }
 
             @Override
@@ -288,7 +300,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
             dialogWindow.setGravity(Gravity.CENTER);
             View view = LayoutInflater.from(this).inflate(R.layout.fragment_list_view, null);
 
-            listView = (ListView)view.findViewById(R.id.listView);
+            listView = (ListView) view.findViewById(R.id.listView);
             mDownloadDir = new File(Environment.getExternalStorageDirectory(), "Download");
             mAdapter = new ListViewAdapter();
             mAdapter.setOnItemClickListener(this);
@@ -328,12 +340,13 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
             lp.width = (int) (Utils.getScreenWidth(this) * 0.7); // 宽度
             lp.height = (int) (Utils.getScreenHeight(this) * 0.8); // 高度
 
-             //lp.alpha = 0.7f; // 透明度
+            //lp.alpha = 0.7f; // 透明度
             dialogWindow.setAttributes(lp);
         }
         listDialog.show();
 
     }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -345,6 +358,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         super.onPause();
         unRegister();
     }
+
     @Override
     public void onItemClick(View v, final int position, final AppInfo appInfo) {
         System.out.println("appInfo status===" + appInfo.getStatus());
@@ -358,6 +372,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
             download(position, appInfo.getUrl(), appInfo);
         }
     }
+
     private void register() {
         mReceiver = new MainActivity.DownloadReceiver();
         IntentFilter intentFilter = new IntentFilter();

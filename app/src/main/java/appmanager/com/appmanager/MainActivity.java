@@ -24,6 +24,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.TextClock;
 
 import com.aspsine.multithreaddownload.DownloadInfo;
 import com.aspsine.multithreaddownload.DownloadManager;
@@ -86,6 +87,8 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
+        TextClock textClock = (TextClock)findViewById(R.id.textClock);
+        textClock.setFormat12Hour("yyyy-MM-dd  hh:mm:ss ");
         Logger log = LoggerFactory.getLogger(MainActivity.class);
         log.info("hello world");
         getAdminPwd();

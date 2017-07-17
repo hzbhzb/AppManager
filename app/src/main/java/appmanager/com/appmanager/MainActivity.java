@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.PixelFormat;
 import android.os.Environment;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
@@ -16,6 +17,7 @@ import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -48,7 +50,9 @@ import appmanager.com.appmanager.multithreaddownload.demo.ui.adapter.ListViewAda
 import appmanager.com.appmanager.multithreaddownload.demo.util.Utils;
 import appmanager.com.appmanager.net.NetRequestLisener;
 import appmanager.com.appmanager.net.NetRequestUtils;
+import appmanager.com.appmanager.view.gridpasswordview.DragFloatActionButton;
 import appmanager.com.appmanager.view.gridpasswordview.GridPasswordView;
+import appmanager.com.appmanager.view.gridpasswordview.floatview.FloatWindowService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -77,6 +81,9 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
     private File mDownloadDir;
     private String adminPwd;
     private MainActivity.DownloadReceiver mReceiver;
+    private WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+    private static WindowManager windowManager;
+    private static ImageView imageView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +103,13 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
                 android.R.style.Theme_Translucent_NoTitleBar);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.pay_dialog);
+        ImageView iv_close = (ImageView) dialog.findViewById(R.id.iv_close);
+        iv_close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
         pswView = (GridPasswordView) dialog.findViewById(R.id.pswView);
         pswView.setOnPasswordChangedListener(new GridPasswordView.OnPasswordChangedListener() {
             @Override
@@ -128,6 +142,11 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         //初始化控件
         initViews();
 
+        Intent intent = new Intent(MainActivity.this, FloatWindowService.class);
+        startService(intent);
+    }
+
+    private void getAppInfos() {
         NetRequestUtils.callMetroNetRequestPost("apps", new NetRequestLisener() {
             @Override
             public void success(String result) {
@@ -147,7 +166,6 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
 
             }
         });
-
     }
 
     private void getAdminPwd() {
@@ -195,7 +213,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
                 MyApplication.apkPkgNames.add(apkListResponse.get(i).getPkg());
                 listDatas.add(apkBean);
             }
-
+            MyApplication.allApkPkgNames.add(apkListResponse.get(i).getPkg());
 
         }
         listDatas.addAll(listDatas);
@@ -353,6 +371,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
     @Override
     public void onResume() {
         super.onResume();
+        getAppInfos();
         register();
     }
 

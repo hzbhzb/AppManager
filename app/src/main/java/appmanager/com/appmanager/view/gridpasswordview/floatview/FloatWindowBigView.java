@@ -7,6 +7,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 
+import appmanager.com.appmanager.R;
+
 public class FloatWindowBigView extends LinearLayout {
 
 	/**
@@ -37,13 +39,6 @@ public class FloatWindowBigView extends LinearLayout {
 				context.stopService(intent);
 			}
 		});
-		back.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				// 点击返回的时候，移除大悬浮窗，创建小悬浮窗
-				MyWindowManager.removeBigWindow(context);
-				MyWindowManager.createSmallWindow(context);
-			}
-		});
+
 	}
 }

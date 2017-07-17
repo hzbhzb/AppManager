@@ -3,12 +3,16 @@ package appmanager.com.appmanager.view.gridpasswordview.floatview;
 import java.lang.reflect.Field;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import appmanager.com.appmanager.MainActivity;
+import appmanager.com.appmanager.R;
 
 public class FloatWindowSmallView extends LinearLayout {
 
@@ -67,6 +71,8 @@ public class FloatWindowSmallView extends LinearLayout {
 	 */
 	private float yInView;
 
+	private Context context;
+
 	public FloatWindowSmallView(Context context) {
 		super(context);
 		windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
@@ -74,8 +80,7 @@ public class FloatWindowSmallView extends LinearLayout {
 		View view = findViewById(R.id.small_window_layout);
 		viewWidth = view.getLayoutParams().width;
 		viewHeight = view.getLayoutParams().height;
-		TextView percentView = (TextView) findViewById(R.id.percent);
-		percentView.setText(MyWindowManager.getUsedPercentValue(context));
+		this.context = context;
 	}
 
 	@Override
@@ -99,13 +104,22 @@ public class FloatWindowSmallView extends LinearLayout {
 		case MotionEvent.ACTION_UP:
 			// 如果手指离开屏幕时，xDownInScreen和xInScreen相等，且yDownInScreen和yInScreen相等，则视为触发了单击事件。
 			if (xDownInScreen == xInScreen && yDownInScreen == yInScreen) {
-				openBigWindow();
+				//openBigWindow();
+				System.out.println("go home");
+				goHome();
 			}
 			break;
 		default:
 			break;
 		}
 		return true;
+	}
+
+	public void goHome() {
+		Intent it = new Intent("android.intent.action.MAIN");
+		it.setClassName("appmanager.com.appmanager","appmanager.com.appmanager.MainActivity");
+		it.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		context.startActivity(it);
 	}
 
 	/**

@@ -12,6 +12,9 @@ import android.view.WindowManager;
 import android.view.WindowManager.LayoutParams;
 import android.widget.TextView;
 
+import appmanager.com.appmanager.MainActivity;
+import appmanager.com.appmanager.R;
+
 public class MyWindowManager {
 
 	/**

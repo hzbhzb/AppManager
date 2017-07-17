@@ -25,6 +25,7 @@ public class MyApplication extends Application {
     public static Context sContext;
     public static List<ApkResponse> apkResponseList;
     public static List<String> apkPkgNames = new ArrayList<>();
+    public static List<String> allApkPkgNames = new ArrayList<>();
 
     @Override
     public void onCreate() {

@@ -85,12 +85,4 @@
         android:background="@drawable/bottom_btn_bg"
         android:src="@drawable/home_icon"/>
 
-    <appmanager.com.appmanager.view.gridpasswordview.DragFloatActionButton
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/home_icon"
-        android:layout_alignParentBottom="true"
-        android:scaleType="center"/>
-
-
 </RelativeLayout>

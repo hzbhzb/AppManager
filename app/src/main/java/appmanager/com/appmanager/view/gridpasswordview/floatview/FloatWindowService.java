@@ -15,6 +15,8 @@ import android.content.pm.ResolveInfo;
 import android.os.Handler;
 import android.os.IBinder;
 
+import appmanager.com.appmanager.MyApplication;
+
 public class FloatWindowService extends Service {
 
 	/**
@@ -64,7 +66,7 @@ public class FloatWindowService extends Service {
 				});
 			}
 			// 当前界面不是桌面，且有悬浮窗显示，则移除悬浮窗。
-			else if (!isHome() && MyWindowManager.isWindowShowing()) {
+			else if (isHome() && MyWindowManager.isWindowShowing()) {
 				handler.post(new Runnable() {
 					@Override
 					public void run() {
@@ -96,7 +98,7 @@ public class FloatWindowService extends Service {
 	}
 
 	/**
-	 * 获得属于桌面的应用的应用包名称
+	 * 获得属于桌面的自带的应用的应用包名称
 	 * 
 	 * @return 返回包含所有包名的字符串列表
 	 */
@@ -108,7 +110,8 @@ public class FloatWindowService extends Service {
 		List<ResolveInfo> resolveInfo = packageManager.queryIntentActivities(intent,
 				PackageManager.MATCH_DEFAULT_ONLY);
 		for (ResolveInfo ri : resolveInfo) {
-			names.add(ri.activityInfo.packageName);
+			if (!MyApplication.allApkPkgNames.contains(ri.activityInfo.packageName))
+			    names.add(ri.activityInfo.packageName);
 		}
 		return names;
 	}

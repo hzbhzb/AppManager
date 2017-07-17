@@ -6,6 +6,7 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.GET_TASKS"/>
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
 
     <application
         android:name=".MyApplication"
@@ -40,7 +41,7 @@
                 android:name="android.accessibilityservice"
                 android:resource="@xml/accessibility_service_config" />
         </service>
-
+        <service android:name="appmanager.com.appmanager.view.gridpasswordview.floatview.FloatWindowService"></service>
         <activity android:name=".AppManagerActivity"
             android:screenOrientation="landscape"></activity>
     </application>

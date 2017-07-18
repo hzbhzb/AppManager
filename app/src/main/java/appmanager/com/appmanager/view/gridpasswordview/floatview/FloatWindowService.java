@@ -1,5 +1,6 @@
 package appmanager.com.appmanager.view.gridpasswordview.floatview;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Timer;
@@ -8,12 +9,16 @@ import java.util.TimerTask;
 import android.app.ActivityManager;
 import android.app.ActivityManager.RunningTaskInfo;
 import android.app.Service;
+import android.app.usage.UsageStats;
+import android.app.usage.UsageStatsManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
+import android.util.Log;
 
 import appmanager.com.appmanager.MyApplication;
 
@@ -57,7 +62,7 @@ public class FloatWindowService extends Service {
 		@Override
 		public void run() {
 			// 当前界面是桌面，且没有悬浮窗显示，则创建悬浮窗。
-			if (isHome() && !MyWindowManager.isWindowShowing()) {
+			if (!isHome() && !MyWindowManager.isWindowShowing()) {
 				handler.post(new Runnable() {
 					@Override
 					public void run() {
@@ -92,10 +97,18 @@ public class FloatWindowService extends Service {
 	 * 判断当前界面是否是桌面
 	 */
 	private boolean isHome() {
+		if (MyApplication.allApkPkgNames.size() == 0) {
+			System.out.println("allApkPkgName is null");
+			return false;
+		}
+		System.out.println("allApkPkgNames ==" + MyApplication.allApkPkgNames.get(0));
+
 		ActivityManager mActivityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
 		List<RunningTaskInfo> rti = mActivityManager.getRunningTasks(1);
-		return getHomes().contains(rti.get(0).topActivity.getPackageName());
+		System.out.println("topActivity PkgName==" + getTopApp(getApplicationContext()));
+		return MyApplication.allApkPkgNames.contains(getTopApp(getApplicationContext()));
 	}
+
 
 	/**
 	 * 获得属于桌面的自带的应用的应用包名称
@@ -114,5 +127,33 @@ public class FloatWindowService extends Service {
 			    names.add(ri.activityInfo.packageName);
 		}
 		return names;
+	}
+	private String getTopApp(Context context) {
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+			UsageStatsManager m = (UsageStatsManager) context.getSystemService(Context.USAGE_STATS_SERVICE);
+			if (m != null) {
+				long now = System.currentTimeMillis();
+				//获取60秒之内的应用数据
+				List<UsageStats> stats = m.queryUsageStats(UsageStatsManager.INTERVAL_BEST, now - 60 * 1000, now);
+				Log.i("Top Activity", "Running app number in last 60 seconds : " + stats.size());
+
+				String topActivity = "";
+
+				//取得最近运行的一个app，即当前运行的app
+				if ((stats != null) && (!stats.isEmpty())) {
+					int j = 0;
+					for (int i = 0; i < stats.size(); i++) {
+						if (stats.get(i).getLastTimeUsed() > stats.get(j).getLastTimeUsed()) {
+							j = i;
+						}
+					}
+					topActivity = stats.get(j).getPackageName();
+				}
+				Log.i("Top Activity", "top running app is : "+topActivity);
+				return topActivity;
+
+			}
+		}
+		return "";
 	}
 }

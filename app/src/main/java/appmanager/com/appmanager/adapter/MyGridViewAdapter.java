@@ -1,6 +1,8 @@
 package appmanager.com.appmanager.adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +16,7 @@ import com.android.volley.toolbox.NetworkImageView;
 
 import java.util.List;
 
+import appmanager.com.appmanager.ApkResponse;
 import appmanager.com.appmanager.MyApplication;
 import appmanager.com.appmanager.R;
 import appmanager.com.appmanager.bean.ApkBean;
@@ -25,14 +28,14 @@ import appmanager.com.appmanager.bean.LruBitmapCache;
 
 public class MyGridViewAdapter extends BaseAdapter {
 
-    private List<ApkBean> listData;
+    private List<ApkResponse> listData;
     private LayoutInflater inflater;
     private Context context;
     private int mIndex;//页数下标，表示第几页，从0开始
     private int mPagerSize;//每页显示的最大数量
     private static ImageLoader mImageLoader;
 
-    public MyGridViewAdapter(Context context,List<ApkBean> listData,int mIndex,int mPagerSize) {
+    public MyGridViewAdapter(Context context,List<ApkResponse> listData,int mIndex,int mPagerSize) {
         this.context = context;
         this.listData = listData;
         this.mIndex = mIndex;
@@ -78,16 +81,19 @@ public class MyGridViewAdapter extends BaseAdapter {
             convertView.setTag(holder);
             //重新确定position（因为拿到的是总的数据源，数据源是分页加载到每页的GridView上的，为了确保能正确的点对不同页上的item）
             final int pos = position + mIndex*mPagerSize;//假设mPagerSize=8，假如点击的是第二页（即mIndex=1）上的第二个位置item(position=1),那么这个item的实际位置就是pos=9
-            ApkBean bean = listData.get(pos);
-            holder.proName.setText(bean.getProName());
+            ApkResponse bean = listData.get(pos);
+            holder.proName.setText(bean.getName());
 
             // 开始加载网络图片
-            holder.imgUrl.setImageUrl(bean.getImgUrl(), mImageLoader);
+            holder.imgUrl.setImageUrl(bean.getLogo(), mImageLoader);
             //添加item监听
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(context,"你点击了 "+listData.get(pos).getProName(), Toast.LENGTH_SHORT).show();
+                    Intent intent = isexit(context, listData.get(pos).getPkg());
+                    context.startActivity(intent);
+
+                    Toast.makeText(context,"你点击了 "+listData.get(pos).getName(), Toast.LENGTH_SHORT).show();
                 }
             });
         }else{
@@ -96,7 +102,11 @@ public class MyGridViewAdapter extends BaseAdapter {
 
         return convertView;
     }
-
+    public static Intent isexit(Context context,String pk_name){
+        PackageManager packageManager = context.getPackageManager();
+        Intent it= packageManager.getLaunchIntentForPackage(pk_name);
+        return it;
+    }
     class ViewHolder{
         private TextView proName;
         private NetworkImageView imgUrl;

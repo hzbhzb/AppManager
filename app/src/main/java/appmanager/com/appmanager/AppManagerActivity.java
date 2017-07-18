@@ -129,9 +129,6 @@ public class AppManagerActivity extends AppCompatActivity {
 
 
         }
-        for (ApkResponse apkResponse : MyApplication.apkResponseList) {
-
-        }
     }
 
     /**

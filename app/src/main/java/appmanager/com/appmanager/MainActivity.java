@@ -1,5 +1,6 @@
 package appmanager.com.appmanager;
 
+import android.app.AppOpsManager;
 import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -7,7 +8,9 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.PixelFormat;
+import android.os.Build;
 import android.os.Environment;
+import android.provider.Settings;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
@@ -68,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
     private ViewPager viewPager;
     private int totalPage;//总的页数
     private int mPageSize = 8;//每页显示的最大数量
-    private List<ApkBean> listDatas;//总的数据源
+    private List<ApkResponse> listDatas;//总的数据源
     private List<View> viewPagerList;//GridView作为一个View对象添加到ViewPager集合中
     private int currentPage;//当前页
 
@@ -85,12 +88,44 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
     private static WindowManager windowManager;
     private static ImageView imageView;
 
+    private static final int MY_PERMISSIONS_REQUEST_PACKAGE_USAGE_STATS = 1101;
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == MY_PERMISSIONS_REQUEST_PACKAGE_USAGE_STATS) {
+            if (!hasPermission()) {
+                //若用户未开启权限，则引导用户开启“Apps with usage access”权限
+                startActivityForResult(
+                        new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS),
+                        MY_PERMISSIONS_REQUEST_PACKAGE_USAGE_STATS);
+            }
+        }
+    }
+
+    //检测用户是否对本app开启了“Apps with usage access”权限
+    private boolean hasPermission() {
+        AppOpsManager appOps = (AppOpsManager)
+                getSystemService(Context.APP_OPS_SERVICE);
+        int mode = 0;
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT) {
+            mode = appOps.checkOpNoThrow(AppOpsManager.OPSTR_GET_USAGE_STATS,
+                    android.os.Process.myUid(), getPackageName());
+        }
+        return mode == AppOpsManager.MODE_ALLOWED;
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            if (!hasPermission()) {
+                startActivityForResult(
+                        new Intent(Settings.ACTION_USAGE_ACCESS_SETTINGS),
+                        MY_PERMISSIONS_REQUEST_PACKAGE_USAGE_STATS);
+            }
+        }
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
@@ -205,13 +240,10 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
     private void setDatas() {
         listDatas = new ArrayList<>();
         for (int i = 0; i < apkListResponse.size(); i++) {
-            ApkBean apkBean = new ApkBean();
-            apkBean.setDownUrl(apkListResponse.get(i).getPath());
-            apkBean.setImgUrl(apkListResponse.get(i).getLogo());
-            apkBean.setProName(apkListResponse.get(i).getName());
+
             if (apkListResponse.get(i).getType().equals("DLJ")) {
                 MyApplication.apkPkgNames.add(apkListResponse.get(i).getPkg());
-                listDatas.add(apkBean);
+                listDatas.add(apkListResponse.get(i));
             }
             MyApplication.allApkPkgNames.add(apkListResponse.get(i).getPkg());
 

@@ -30,6 +30,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextClock;
+import android.widget.TextView;
 
 import com.aspsine.multithreaddownload.DownloadInfo;
 import com.aspsine.multithreaddownload.DownloadManager;
@@ -238,18 +239,22 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
     }
 
     private void setDatas() {
-        listDatas = new ArrayList<>();
+        if (listDatas == null)
+           listDatas = new ArrayList<>();
+        listDatas.clear();
+        MyApplication.allApkPkgNames.clear();
+        MyApplication.apkPkgNames.clear();
+
         for (int i = 0; i < apkListResponse.size(); i++) {
 
             if (apkListResponse.get(i).getType().equals("DLJ")) {
-                MyApplication.apkPkgNames.add(apkListResponse.get(i).getPkg());
-                listDatas.add(apkListResponse.get(i));
+                String pkgName = apkListResponse.get(i).getPkg();
+                MyApplication.apkPkgNames.add(pkgName);
+                if (Utils.isAppInstalled(this, pkgName))
+                    listDatas.add(apkListResponse.get(i));
             }
             MyApplication.allApkPkgNames.add(apkListResponse.get(i).getPkg());
-
         }
-        listDatas.addAll(listDatas);
-        //sys_listDatas.addAll(sys_listDatas);
     }
 
 
@@ -300,7 +305,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
 
         //小圆点指示器
         ivPoints = new ImageView[totalPage];
-
+        points.removeAllViews();
         for (int i = 0; i < ivPoints.length; i++) {
             ImageView imageView = new ImageView(this);
             //设置图片的宽高
@@ -352,7 +357,13 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
             dialogWindow.getDecorView().setPadding(0, 0, 0, 0);
             dialogWindow.setGravity(Gravity.CENTER);
             View view = LayoutInflater.from(this).inflate(R.layout.fragment_list_view, null);
-
+            TextView tv_close = (TextView) view.findViewById(R.id.tv_close);
+            tv_close.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    listDialog.dismiss();
+                }
+            });
             listView = (ListView) view.findViewById(R.id.listView);
             mDownloadDir = new File(Environment.getExternalStorageDirectory(), "Download");
             mAdapter = new ListViewAdapter();
@@ -416,12 +427,28 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
     @Override
     public void onItemClick(View v, final int position, final AppInfo appInfo) {
         System.out.println("appInfo status===" + appInfo.getStatus());
+
+
         if (appInfo.getStatus() == AppInfo.STATUS_DOWNLOADING || appInfo.getStatus() == AppInfo.STATUS_CONNECTING) {
             pause(appInfo.getUrl());
         } else if (appInfo.getStatus() == AppInfo.STATUS_COMPLETE) {
             install(appInfo);
+            mAppInfos.get(position).setStatus(AppInfo.STATUS_INSTALLED);
+            if (isCurrentListViewItemVisible(position)) {
+                ListViewAdapter.ViewHolder holder = getViewHolder(position);
+                holder.tvStatus.setText(appInfo.getStatusText());
+                holder.btnDownload.setText(appInfo.getButtonText());
+            }
+            listDialog.dismiss();
         } else if (appInfo.getStatus() == AppInfo.STATUS_INSTALLED) {
             unInstall(appInfo);
+            mAppInfos.get(position).setStatus(AppInfo.STATUS_COMPLETE);
+            if (isCurrentListViewItemVisible(position)) {
+                ListViewAdapter.ViewHolder holder = getViewHolder(position);
+                holder.tvStatus.setText(appInfo.getStatusText());
+                holder.btnDownload.setText(appInfo.getButtonText());
+            }
+            listDialog.dismiss();
         } else {
             download(position, appInfo.getUrl(), appInfo);
         }

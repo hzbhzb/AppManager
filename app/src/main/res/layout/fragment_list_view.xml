@@ -19,6 +19,7 @@
             android:text="应用列表"
             android:layout_centerInParent="true"/>
         <TextView
+            android:id="@+id/tv_close"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="关闭"

@@ -18,6 +18,7 @@ import android.content.pm.ResolveInfo;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
+import android.text.TextUtils;
 import android.util.Log;
 
 import appmanager.com.appmanager.MyApplication;
@@ -106,7 +107,8 @@ public class FloatWindowService extends Service {
 		ActivityManager mActivityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
 		List<RunningTaskInfo> rti = mActivityManager.getRunningTasks(1);
 		System.out.println("topActivity PkgName==" + getTopApp(getApplicationContext()));
-		return MyApplication.allApkPkgNames.contains(getTopApp(getApplicationContext()));
+		String topPkgName = getTopApp(getApplicationContext());
+		return MyApplication.allApkPkgNames.contains(topPkgName) || TextUtils.equals(topPkgName, getPackageName()) || TextUtils.equals(topPkgName, "");
 	}
 
 

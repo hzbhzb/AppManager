@@ -1,6 +1,7 @@
 package appmanager.com.appmanager.adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,6 +21,7 @@ import appmanager.com.appmanager.R;
 import appmanager.com.appmanager.bean.ApkBean;
 import appmanager.com.appmanager.bean.LocalAppInfo;
 import appmanager.com.appmanager.bean.LruBitmapCache;
+import appmanager.com.appmanager.multithreaddownload.demo.util.Utils;
 
 /**
  * Created by huangzhebin on 2017/7/5.
@@ -101,7 +103,9 @@ public class LocalGridViewAdapter extends BaseAdapter {
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(context,"你点击了 "+listData.get(pos).getAppName(), Toast.LENGTH_SHORT).show();
+                    Intent intent = Utils.isexit(context, listData.get(pos).getPackageName());
+                    context.startActivity(intent);
+                    Toast.makeText(context,"你点击了 "+listData.get(pos).getPackageName(), Toast.LENGTH_SHORT).show();
                 }
             });
         }else{

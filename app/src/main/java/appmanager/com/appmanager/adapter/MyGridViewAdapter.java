@@ -21,6 +21,7 @@ import appmanager.com.appmanager.MyApplication;
 import appmanager.com.appmanager.R;
 import appmanager.com.appmanager.bean.ApkBean;
 import appmanager.com.appmanager.bean.LruBitmapCache;
+import appmanager.com.appmanager.multithreaddownload.demo.util.Utils;
 
 /**
  * Created by huangzhebin on 2017/6/17.
@@ -90,7 +91,7 @@ public class MyGridViewAdapter extends BaseAdapter {
             convertView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent intent = isexit(context, listData.get(pos).getPkg());
+                    Intent intent = Utils.isexit(context, listData.get(pos).getPkg());
                     context.startActivity(intent);
 
                     Toast.makeText(context,"你点击了 "+listData.get(pos).getName(), Toast.LENGTH_SHORT).show();
@@ -102,11 +103,7 @@ public class MyGridViewAdapter extends BaseAdapter {
 
         return convertView;
     }
-    public static Intent isexit(Context context,String pk_name){
-        PackageManager packageManager = context.getPackageManager();
-        Intent it= packageManager.getLaunchIntentForPackage(pk_name);
-        return it;
-    }
+
     class ViewHolder{
         private TextView proName;
         private NetworkImageView imgUrl;

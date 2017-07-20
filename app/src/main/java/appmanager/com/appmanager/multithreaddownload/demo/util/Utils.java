@@ -59,11 +59,33 @@ public class Utils {
         if (!ListUtils.isEmpty(packages)) {
             for (PackageInfo packageInfo : packages) {
                 if (packageInfo.packageName.equals(packageName)) {
+
                     return true;
                 }
             }
         }
         return false;
+    }
+    public static boolean isNeedUpdate(Context context, String pkgName, String version) {
+        List<PackageInfo> packages = context.getPackageManager().getInstalledPackages(0);
+        if (!ListUtils.isEmpty(packages)) {
+            for (PackageInfo packageInfo : packages) {
+                if (packageInfo.packageName.equals(pkgName)) {
+                    String ver = packageInfo.versionName.replace(".", "");
+                    if (Long.getLong(ver) < Long.getLong(version)) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                }
+            }
+        }
+        return false;
+    }
+    public static Intent isexit(Context context,String pk_name){
+        PackageManager packageManager = context.getPackageManager();
+        Intent it= packageManager.getLaunchIntentForPackage(pk_name);
+        return it;
     }
     public static int getScreenHeight(Context context)
     {

@@ -31,6 +31,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextClock;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.aspsine.multithreaddownload.DownloadInfo;
 import com.aspsine.multithreaddownload.DownloadManager;
@@ -155,14 +156,15 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
 
             @Override
             public void onInputFinish(String psw) {
-                if (!TextUtils.equals(psw, adminPwd)) {
+                if (TextUtils.equals(psw, adminPwd)) {
                     Intent intent = new Intent(MainActivity.this, AppManagerActivity.class);
-
-                    //intent.putExtra("EXTRA_TYPE", AppListActivity.TYPE.TYPE_LISTVIEW);
                     startActivity(intent);
+                    dialog.cancel();
+                } else {
+                    Toast.makeText(MainActivity.this, "密码错误", Toast.LENGTH_SHORT).show();
                 }
-                dialog.cancel();
                 pswView.clearPassword();
+
             }
         });
         dialog.setOnShowListener(new DialogInterface.OnShowListener() {
@@ -211,7 +213,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
                 Gson gson = new Gson();
                 AdminPwdResponse adminPwdResponse = gson.fromJson(result, AdminPwdResponse.class);
                 adminPwd = adminPwdResponse.getData().get(0).getPwd();
-                System.out.println("admin pwds length == " + adminPwdResponse.getData().size());
+                System.out.println("admin pwds length == " + adminPwd);
             }
 
             @Override
@@ -244,7 +246,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         listDatas.clear();
         MyApplication.allApkPkgNames.clear();
         MyApplication.apkPkgNames.clear();
-
+        MyApplication.apkPkgNames.add(getPackageName());
         for (int i = 0; i < apkListResponse.size(); i++) {
 
             if (apkListResponse.get(i).getType().equals("DLJ")) {
@@ -387,7 +389,12 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
                     File apk = new File(mDownloadDir, info.getName() + ".apk");
 
                     if (Utils.isAppInstalled(this, info.getPackageName())) {
-                        info.setStatus(AppInfo.STATUS_INSTALLED);
+                        if (Utils.isNeedUpdate(this, info.getPackageName(), info.getVerCode())) {
+                            info.setStatus(AppInfo.STATUS_RENEWABLE);
+                        } else {
+                            info.setStatus(AppInfo.STATUS_INSTALLED);
+                        }
+
                     } else if (apk.isFile() && apk.exists()) {
                         info.setStatus(AppInfo.STATUS_COMPLETE);
                     } else {
@@ -431,7 +438,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
 
         if (appInfo.getStatus() == AppInfo.STATUS_DOWNLOADING || appInfo.getStatus() == AppInfo.STATUS_CONNECTING) {
             pause(appInfo.getUrl());
-        } else if (appInfo.getStatus() == AppInfo.STATUS_COMPLETE) {
+        } else if (appInfo.getStatus() == AppInfo.STATUS_COMPLETE || appInfo.getStatus() == AppInfo.STATUS_RENEWABLE) {
             install(appInfo);
             mAppInfos.get(position).setStatus(AppInfo.STATUS_INSTALLED);
             if (isCurrentListViewItemVisible(position)) {
@@ -458,6 +465,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         mReceiver = new MainActivity.DownloadReceiver();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(DownloadService.ACTION_DOWNLOAD_BROAD_CAST);
+        intentFilter.addAction(Intent.ACTION_CLOSE_SYSTEM_DIALOGS);
         LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver, intentFilter);
     }
 
@@ -492,6 +500,18 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         @Override
         public void onReceive(Context context, Intent intent) {
             final String action = intent.getAction();
+            String SYSTEM_REASON = "reason";
+            String SYSTEM_HOME_KEY = "homekey";
+            String SYSTEM_HOME_KEY_LONG = "recentapps";
+            if (action.equals(Intent.ACTION_CLOSE_SYSTEM_DIALOGS)) {
+                String reason = intent.getStringExtra(SYSTEM_REASON);
+                if (TextUtils.equals(reason, SYSTEM_HOME_KEY)) {
+                    //表示按了home键,程序到了后台
+                    Toast.makeText(getApplicationContext(), "home", Toast.LENGTH_SHORT).show();
+                }else if(TextUtils.equals(reason, SYSTEM_HOME_KEY_LONG)){
+                    //表示长按home键,显示最近使用的程序列表
+                }
+            }
             if (action == null || !action.equals(DownloadService.ACTION_DOWNLOAD_BROAD_CAST)) {
                 return;
             }

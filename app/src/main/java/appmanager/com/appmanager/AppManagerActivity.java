@@ -19,9 +19,12 @@ import android.view.WindowManager;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import appmanager.com.appmanager.adapter.LocalGridViewAdapter;
 import appmanager.com.appmanager.adapter.MyGridViewAdapter;
@@ -43,6 +46,9 @@ public class AppManagerActivity extends AppCompatActivity {
     private List<LocalAppInfo> listDatas;//总的数据源
     private List<View> viewPagerList;//GridView作为一个View对象添加到ViewPager集合中
     private int currentPage;//当前页
+    Timer timer = new Timer();
+    TextView tv_countDown;
+    int recLen = 30;
 
     private static final int GET_ALL_APP_FINISH = 1;
 
@@ -77,6 +83,8 @@ public class AppManagerActivity extends AppCompatActivity {
     }
 
     private void initViews() {
+        tv_countDown = (TextView)findViewById(R.id.tv_countDown);
+        timer.schedule(task, 1000, 1000);
         viewPager = (ViewPager) findViewById(R.id.viewPager);
         //初始化小圆点指示器
         points = (ViewGroup) findViewById(R.id.points);
@@ -215,4 +223,25 @@ public class AppManagerActivity extends AppCompatActivity {
             }
         });
     }
+    public void goBack(View v) {
+        timer.cancel();
+        finish();
+    }
+    TimerTask task = new TimerTask() {
+        @Override
+        public void run() {
+
+            runOnUiThread(new Runnable() {      // UI thread
+                @Override
+                public void run() {
+                    recLen--;
+                    tv_countDown.setText(String.format("%d s没有操作自动退出", recLen));
+                    if(recLen == 0){
+                        timer.cancel();
+                        finish();
+                    }
+                }
+            });
+        }
+    };
 }

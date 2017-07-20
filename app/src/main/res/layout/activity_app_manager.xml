@@ -37,13 +37,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
 
-        android:onClick="back"
+        android:onClick="goBack"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:background="@drawable/bottom_btn_bg"
         android:src="@drawable/back_icon"/>
 
     <TextView
+        android:id="@+id/tv_countDown"
         android:layout_toLeftOf="@id/backBtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

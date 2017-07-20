@@ -68,7 +68,7 @@ public class DataSource {
         List<AppInfo> appInfos = new ArrayList<AppInfo>();
         for (int i = 0; i < apkListResponse.size(); i++) {
             AppInfo appInfo = new AppInfo(String.valueOf(i), apkListResponse.get(i).getName(), apkListResponse.get(i).getLogo(), apkListResponse.get(i).getPath());
-            appInfo.setVerCode(apkListResponse.get(i).getVerName());
+            appInfo.setVerCode(apkListResponse.get(i).getVer());
             appInfo.setPackageName(apkListResponse.get(i).getPkg());
 
             appInfos.add(appInfo);

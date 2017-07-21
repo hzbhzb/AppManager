@@ -57,6 +57,7 @@ import appmanager.com.appmanager.net.NetRequestLisener;
 import appmanager.com.appmanager.net.NetRequestUtils;
 import appmanager.com.appmanager.view.gridpasswordview.DragFloatActionButton;
 import appmanager.com.appmanager.view.gridpasswordview.GridPasswordView;
+import appmanager.com.appmanager.view.gridpasswordview.Util;
 import appmanager.com.appmanager.view.gridpasswordview.floatview.FloatWindowService;
 
 import org.slf4j.Logger;
@@ -447,6 +448,19 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
                 holder.btnDownload.setText(appInfo.getButtonText());
             }
             listDialog.dismiss();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    while(true) {
+                        if (Utils.isAppInstalled(MainActivity.this, appInfo.getPackageName()))
+                        {
+                            System.out.println("已安装==" + appInfo.getPackageName());
+                            onResume();
+                            break;
+                        }
+                    }
+                }
+            }).start();
         } else if (appInfo.getStatus() == AppInfo.STATUS_INSTALLED) {
             unInstall(appInfo);
             mAppInfos.get(position).setStatus(AppInfo.STATUS_COMPLETE);

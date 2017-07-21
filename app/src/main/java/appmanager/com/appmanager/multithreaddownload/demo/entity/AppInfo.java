@@ -6,14 +6,42 @@ import java.io.Serializable;
  * Created by Aspsine on 2015/7/8.
  */
 public class AppInfo implements Serializable {
+    /**
+    * 未下载
+    */
     public static final int STATUS_NOT_DOWNLOAD = 0;
+    /**
+     * 链接中
+     */
     public static final int STATUS_CONNECTING = 1;
+    /**
+     * 下载链接错误
+     */
     public static final int STATUS_CONNECT_ERROR = 2;
+    /**
+     * 下载中
+     */
     public static final int STATUS_DOWNLOADING = 3;
+    /**
+     * 暂停下载
+     */
     public static final int STATUS_PAUSED = 4;
+    /**
+     * 下载出错
+     */
     public static final int STATUS_DOWNLOAD_ERROR = 5;
+    /**
+     * 下载完成
+     */
     public static final int STATUS_COMPLETE = 6;
+    /**
+     * 已安装
+     */
     public static final int STATUS_INSTALLED = 7;
+    /**
+     * 已安装有可更新的安装包
+     */
+    public static final int STATUS_RENEWABLE = 8;
 
     private String name;
     private String packageName;
@@ -144,6 +172,8 @@ public class AppInfo implements Serializable {
                 return "Install";
             case STATUS_INSTALLED:
                 return "UnInstall";
+            case STATUS_RENEWABLE:
+                return "Update";
             default:
                 return "Download";
         }

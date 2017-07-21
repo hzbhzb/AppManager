@@ -94,6 +94,8 @@ public class FloatWindowService extends Service {
 
 	}
 
+
+
 	/**
 	 * 判断当前界面是否是桌面
 	 */
@@ -102,11 +104,11 @@ public class FloatWindowService extends Service {
 			System.out.println("allApkPkgName is null");
 			return false;
 		}
-		System.out.println("allApkPkgNames ==" + MyApplication.allApkPkgNames.get(0));
+		//System.out.println("allApkPkgNames ==" + MyApplication.allApkPkgNames.get(0));
 
 		ActivityManager mActivityManager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
 		List<RunningTaskInfo> rti = mActivityManager.getRunningTasks(1);
-		System.out.println("topActivity PkgName==" + getTopApp(getApplicationContext()));
+		//System.out.println("topActivity PkgName==" + getTopApp(getApplicationContext()));
 		String topPkgName = getTopApp(getApplicationContext());
 		return MyApplication.allApkPkgNames.contains(topPkgName) || TextUtils.equals(topPkgName, getPackageName()) || TextUtils.equals(topPkgName, "");
 	}
@@ -137,7 +139,7 @@ public class FloatWindowService extends Service {
 				long now = System.currentTimeMillis();
 				//获取60秒之内的应用数据
 				List<UsageStats> stats = m.queryUsageStats(UsageStatsManager.INTERVAL_BEST, now - 60 * 1000, now);
-				Log.i("Top Activity", "Running app number in last 60 seconds : " + stats.size());
+				//Log.i("Top Activity", "Running app number in last 60 seconds : " + stats.size());
 
 				String topActivity = "";
 

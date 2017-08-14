@@ -105,7 +105,7 @@ public class LocalGridViewAdapter extends BaseAdapter {
                 public void onClick(View v) {
                     Intent intent = Utils.isexit(context, listData.get(pos).getPackageName());
                     context.startActivity(intent);
-                    Toast.makeText(context,"你点击了 "+listData.get(pos).getPackageName(), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(context,"你点击了 "+listData.get(pos).getPackageName(), Toast.LENGTH_SHORT).show();
                 }
             });
         }else{

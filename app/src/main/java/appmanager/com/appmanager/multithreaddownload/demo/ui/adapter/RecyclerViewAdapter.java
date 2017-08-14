@@ -74,9 +74,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private void bindData(AppViewHolder holder, final int position) {
         final AppInfo appInfo = mAppInfos.get(position);
         holder.tvName.setText(appInfo.getName());
-        holder.tvDownloadPerSize.setText(appInfo.getDownloadPerSize());
-        holder.tvStatus.setText(appInfo.getStatusText());
-        holder.progressBar.setProgress(appInfo.getProgress());
+//        holder.tvDownloadPerSize.setText(appInfo.getDownloadPerSize());
+//        holder.tvStatus.setText(appInfo.getStatusText());
+//        holder.progressBar.setProgress(appInfo.getProgress());
         holder.btnDownload.setText(appInfo.getButtonText());
         Picasso.with(holder.itemView.getContext()).load(appInfo.getImage()).into(holder.ivIcon);
         holder.btnDownload.setOnClickListener(new View.OnClickListener() {
@@ -99,14 +99,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         @Bind(R.id.btnDownload)
         public Button btnDownload;
 
-        @Bind(R.id.tvDownloadPerSize)
-        public TextView tvDownloadPerSize;
-
-        @Bind(R.id.tvStatus)
-        public TextView tvStatus;
-
-        @Bind(R.id.progressBar)
-        public ProgressBar progressBar;
+//        @Bind(R.id.tvDownloadPerSize)
+//        public TextView tvDownloadPerSize;
+//
+//        @Bind(R.id.tvStatus)
+//        public TextView tvStatus;
+//
+//        @Bind(R.id.progressBar)
+//        public ProgressBar progressBar;
 
         public AppViewHolder(View itemView) {
             super(itemView);

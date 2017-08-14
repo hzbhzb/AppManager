@@ -79,7 +79,7 @@ public class Utils {
                         System.out.println("verion is null");
                     System.out.println("ver===" + ver);
                     System.out.println("version===" + version);
-                    if (compareVersion(ver, version) == 0) {
+                    if (TextUtils.equals(ver, version)) {
                         return false;
                     } else {
                         return true;

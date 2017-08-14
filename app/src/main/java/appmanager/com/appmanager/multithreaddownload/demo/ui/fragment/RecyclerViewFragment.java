@@ -142,7 +142,7 @@ public class RecyclerViewFragment extends Fragment implements OnItemClickListene
             mAppInfo.setStatus(AppInfo.STATUS_CONNECTING);
             if (isCurrentListViewItemVisible(mPosition)) {
                 RecyclerViewAdapter.AppViewHolder holder = getViewHolder(mPosition);
-                holder.tvStatus.setText(mAppInfo.getStatusText());
+              //  holder.tvStatus.setText(mAppInfo.getStatusText());
                 holder.btnDownload.setText(mAppInfo.getButtonText());
             }
         }
@@ -152,7 +152,7 @@ public class RecyclerViewFragment extends Fragment implements OnItemClickListene
             mAppInfo.setStatus(AppInfo.STATUS_DOWNLOADING);
             if (isCurrentListViewItemVisible(mPosition)) {
                 RecyclerViewAdapter.AppViewHolder holder = getViewHolder(mPosition);
-                holder.tvStatus.setText(mAppInfo.getStatusText());
+               // holder.tvStatus.setText(mAppInfo.getStatusText());
                 holder.btnDownload.setText(mAppInfo.getButtonText());
             }
         }
@@ -165,9 +165,9 @@ public class RecyclerViewFragment extends Fragment implements OnItemClickListene
             mAppInfo.setStatus(AppInfo.STATUS_DOWNLOADING);
             if (isCurrentListViewItemVisible(mPosition)) {
                 RecyclerViewAdapter.AppViewHolder holder = getViewHolder(mPosition);
-                holder.tvDownloadPerSize.setText(downloadPerSize);
-                holder.progressBar.setProgress(progress);
-                holder.tvStatus.setText(mAppInfo.getStatusText());
+//                holder.tvDownloadPerSize.setText(downloadPerSize);
+//                holder.progressBar.setProgress(progress);
+//                holder.tvStatus.setText(mAppInfo.getStatusText());
                 holder.btnDownload.setText(mAppInfo.getButtonText());
             }
         }
@@ -186,7 +186,7 @@ public class RecyclerViewFragment extends Fragment implements OnItemClickListene
 
             if (isCurrentListViewItemVisible(mPosition)) {
                 RecyclerViewAdapter.AppViewHolder holder = getViewHolder(mPosition);
-                holder.tvStatus.setText(mAppInfo.getStatusText());
+               // holder.tvStatus.setText(mAppInfo.getStatusText());
                 holder.btnDownload.setText(mAppInfo.getButtonText());
             }
         }
@@ -196,7 +196,7 @@ public class RecyclerViewFragment extends Fragment implements OnItemClickListene
             mAppInfo.setStatus(AppInfo.STATUS_PAUSED);
             if (isCurrentListViewItemVisible(mPosition)) {
                 RecyclerViewAdapter.AppViewHolder holder = getViewHolder(mPosition);
-                holder.tvStatus.setText(mAppInfo.getStatusText());
+                //holder.tvStatus.setText(mAppInfo.getStatusText());
                 holder.btnDownload.setText(mAppInfo.getButtonText());
             }
         }
@@ -207,8 +207,8 @@ public class RecyclerViewFragment extends Fragment implements OnItemClickListene
             mAppInfo.setDownloadPerSize("");
             if (isCurrentListViewItemVisible(mPosition)) {
                 RecyclerViewAdapter.AppViewHolder holder = getViewHolder(mPosition);
-                holder.tvStatus.setText(mAppInfo.getStatusText());
-                holder.tvDownloadPerSize.setText("");
+//                holder.tvStatus.setText(mAppInfo.getStatusText());
+//                holder.tvDownloadPerSize.setText("");
                 holder.btnDownload.setText(mAppInfo.getButtonText());
             }
         }
@@ -219,8 +219,8 @@ public class RecyclerViewFragment extends Fragment implements OnItemClickListene
             mAppInfo.setDownloadPerSize("");
             if (isCurrentListViewItemVisible(mPosition)) {
                 RecyclerViewAdapter.AppViewHolder holder = getViewHolder(mPosition);
-                holder.tvStatus.setText(mAppInfo.getStatusText());
-                holder.tvDownloadPerSize.setText("");
+//                holder.tvStatus.setText(mAppInfo.getStatusText());
+//                holder.tvDownloadPerSize.setText("");
                 holder.btnDownload.setText(mAppInfo.getButtonText());
             }
             e.printStackTrace();

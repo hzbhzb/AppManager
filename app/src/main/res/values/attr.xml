@@ -21,4 +21,13 @@
         </attr>
 
     </declare-styleable>
+
+    <declare-styleable name="progressbutton">
+        <attr name="progressColor" format="color" />
+        <attr name="progressBgColor" format="color" />
+        <attr name="buttonNormalColor" format="color" />
+        <attr name="buttonPressedColor" format="color" />
+        <attr name="buttonCornerRadius" format="dimension"/>
+        <attr name="showProgressNum" format="boolean"/>
+    </declare-styleable>
 </resources>

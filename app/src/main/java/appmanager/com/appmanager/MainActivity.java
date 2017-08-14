@@ -7,6 +7,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.Environment;
@@ -25,6 +27,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -133,16 +136,18 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
         TextClock textClock = (TextClock)findViewById(R.id.textClock);
-        textClock.setFormat12Hour("yyyy-MM-dd  hh:mm:ss ");
-        Logger log = LoggerFactory.getLogger(MainActivity.class);
-        log.info("hello world");
+        textClock.setFormat12Hour("yyyy年mm月dd日 EEEE hh:mm:ss aa");
+        TextView ly_version = (TextView)findViewById(R.id.ly_version);
+        ly_version.setText(String.format("版本号%s", getSoftVersion(this)));
+
         getAdminPwd();
         dialog = new Dialog(this,
                 android.R.style.Theme_Translucent_NoTitleBar);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.pay_dialog);
-        ImageView iv_close = (ImageView) dialog.findViewById(R.id.iv_close);
-        iv_close.setOnClickListener(new View.OnClickListener() {
+        dialog.setCancelable(false);
+        Button btn_close = (Button) dialog.findViewById(R.id.btn_close);
+        btn_close.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 dialog.dismiss();
@@ -184,7 +189,20 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         Intent intent = new Intent(MainActivity.this, FloatWindowService.class);
         startService(intent);
     }
+    /**
+     * 获取版本信息
+     */
+    public static String getSoftVersion(Context context) {
+        PackageManager packageManager = context.getPackageManager();
+        try {
+            PackageInfo localPackageInfo = packageManager.getPackageInfo(context.getPackageName(), 0);
+            return localPackageInfo.versionName;
+        } catch (Exception e) {
 
+            return "";
+        }
+
+    }
     private void getAppInfos() {
         NetRequestUtils.callMetroNetRequestPost("apps", new NetRequestLisener() {
             @Override
@@ -355,10 +373,10 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
             listDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             listDialog.show();
 
-            Window dialogWindow = listDialog.getWindow();
-
-            dialogWindow.getDecorView().setPadding(0, 0, 0, 0);
-            dialogWindow.setGravity(Gravity.CENTER);
+//            Window dialogWindow = listDialog.getWindow();
+//
+//            dialogWindow.getDecorView().setPadding(10, 10, 10, 10);
+//            dialogWindow.setGravity(Gravity.CENTER);
             View view = LayoutInflater.from(this).inflate(R.layout.fragment_list_view, null);
             TextView tv_close = (TextView) view.findViewById(R.id.tv_close);
             tv_close.setOnClickListener(new View.OnClickListener() {
@@ -373,14 +391,14 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
             mAdapter.setOnItemClickListener(this);
             DataSource.getInstance().setData(apkListResponse);
             mAppInfos = DataSource.getInstance().getData();
-            System.out.println("mAppInfos size==" + mAppInfos.size());
+
             for (AppInfo info : mAppInfos) {
                 DownloadInfo downloadInfo = DownloadManager.getInstance().getDownloadInfo(info.getUrl());
                 if (downloadInfo != null) {
                     info.setProgress(downloadInfo.getProgress());
                     info.setDownloadPerSize(Utils.getDownloadPerSize(downloadInfo.getFinished(), downloadInfo.getLength()));
                     info.setStatus(AppInfo.STATUS_PAUSED);
-                    System.out.println("app size==" + info.getDownloadPerSize());
+
                     if (Utils.isAppInstalled(this, info.getPackageName())) {
                         info.setStatus(AppInfo.STATUS_INSTALLED);
                     } else {
@@ -392,6 +410,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
                     if (Utils.isAppInstalled(this, info.getPackageName())) {
                         if (Utils.isNeedUpdate(this, info.getPackageName(), info.getVerCode())) {
                             info.setStatus(AppInfo.STATUS_RENEWABLE);
+                            apk.delete();
                         } else {
                             info.setStatus(AppInfo.STATUS_INSTALLED);
                         }
@@ -405,15 +424,16 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
             }
             mAdapter.setData(mAppInfos);
             listView.setAdapter(mAdapter);
-            dialogWindow.setContentView(view);
-            WindowManager.LayoutParams lp = dialogWindow.getAttributes();
-//            lp.x = (int) (Utils.getScreenWidth(this) * 0.15); // 新位置X坐标
-//            lp.y = (int) (Utils.getScreenHeight(this) * 0.1); // 新位置Y坐标
-            lp.width = (int) (Utils.getScreenWidth(this) * 0.7); // 宽度
-            lp.height = (int) (Utils.getScreenHeight(this) * 0.8); // 高度
+            //dialogWindow.setContentView(view);
+            listDialog.setContentView(view);
+//            WindowManager.LayoutParams lp = dialogWindow.getAttributes();
+////            lp.x = (int) (Utils.getScreenWidth(this) * 0.15); // 新位置X坐标
+////            lp.y = (int) (Utils.getScreenHeight(this) * 0.1); // 新位置Y坐标
+//            lp.width = (int) (Utils.getScreenWidth(this) * 0.8); // 宽度
+//            lp.height = (int) (Utils.getScreenHeight(this) * 0.8); // 高度
 
             //lp.alpha = 0.7f; // 透明度
-            dialogWindow.setAttributes(lp);
+            //dialogWindow.setAttributes(lp);
         }
         listDialog.show();
 
@@ -439,12 +459,12 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
 
         if (appInfo.getStatus() == AppInfo.STATUS_DOWNLOADING || appInfo.getStatus() == AppInfo.STATUS_CONNECTING) {
             pause(appInfo.getUrl());
-        } else if (appInfo.getStatus() == AppInfo.STATUS_COMPLETE || appInfo.getStatus() == AppInfo.STATUS_RENEWABLE) {
+        } else if (appInfo.getStatus() == AppInfo.STATUS_COMPLETE ) {
             install(appInfo);
             mAppInfos.get(position).setStatus(AppInfo.STATUS_INSTALLED);
             if (isCurrentListViewItemVisible(position)) {
                 ListViewAdapter.ViewHolder holder = getViewHolder(position);
-                holder.tvStatus.setText(appInfo.getStatusText());
+                //holder.tvStatus.setText(appInfo.getStatusText());
                 holder.btnDownload.setText(appInfo.getButtonText());
             }
             listDialog.dismiss();
@@ -455,7 +475,6 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
                         if (Utils.isAppInstalled(MainActivity.this, appInfo.getPackageName()))
                         {
                             System.out.println("已安装==" + appInfo.getPackageName());
-                            onResume();
                             break;
                         }
                     }
@@ -466,11 +485,17 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
             mAppInfos.get(position).setStatus(AppInfo.STATUS_COMPLETE);
             if (isCurrentListViewItemVisible(position)) {
                 ListViewAdapter.ViewHolder holder = getViewHolder(position);
-                holder.tvStatus.setText(appInfo.getStatusText());
+                //holder.tvStatus.setText(appInfo.getStatusText());
                 holder.btnDownload.setText(appInfo.getButtonText());
             }
             listDialog.dismiss();
         } else {
+            if (isCurrentListViewItemVisible(position)) {
+                ListViewAdapter.ViewHolder holder = getViewHolder(position);
+                //holder.tvStatus.setText(appInfo.getStatusText());
+                holder.btnDownload.setText(appInfo.getButtonText());
+                //holder.btnDownload.setVisibility(View.GONE);
+            }
             download(position, appInfo.getUrl(), appInfo);
         }
     }
@@ -541,7 +566,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
                     appInfo.setStatus(AppInfo.STATUS_CONNECTING);
                     if (isCurrentListViewItemVisible(position)) {
                         ListViewAdapter.ViewHolder holder = getViewHolder(position);
-                        holder.tvStatus.setText(appInfo.getStatusText());
+                        //holder.tvStatus.setText(appInfo.getStatusText());
                         holder.btnDownload.setText(appInfo.getButtonText());
                     }
                     break;
@@ -552,10 +577,10 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
                     appInfo.setDownloadPerSize(tmpInfo.getDownloadPerSize());
                     if (isCurrentListViewItemVisible(position)) {
                         ListViewAdapter.ViewHolder holder = getViewHolder(position);
-                        holder.tvDownloadPerSize.setText(appInfo.getDownloadPerSize());
-                        holder.progressBar.setProgress(appInfo.getProgress());
-                        holder.tvStatus.setText(appInfo.getStatusText());
-                        holder.btnDownload.setText(appInfo.getButtonText());
+                        //holder.tvDownloadPerSize.setText(appInfo.getDownloadPerSize());
+                        holder.btnDownload.setProgress(appInfo.getProgress());
+                        //holder.tvStatus.setText(appInfo.getStatusText());
+
                     }
                     break;
                 case AppInfo.STATUS_COMPLETE:
@@ -566,17 +591,17 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
                     if (apk.isFile() && apk.exists()) {
                         String packageName = Utils.getApkFilePackage(MainActivity.this, apk);
                         appInfo.setPackageName(packageName);
-                        if (Utils.isAppInstalled(MainActivity.this, packageName)) {
-                            appInfo.setStatus(AppInfo.STATUS_INSTALLED);
-                        }
+//                        if (Utils.isAppInstalled(MainActivity.this, packageName)) {
+//                            appInfo.setStatus(AppInfo.STATUS_INSTALLED);
+//                        }
                     }
 
                     if (isCurrentListViewItemVisible(position)) {
                         ListViewAdapter.ViewHolder holder = getViewHolder(position);
-                        holder.tvStatus.setText(appInfo.getStatusText());
+                        //holder.tvStatus.setText(appInfo.getStatusText());
                         holder.btnDownload.setText(appInfo.getButtonText());
-                        holder.tvDownloadPerSize.setText(appInfo.getDownloadPerSize());
-                        holder.progressBar.setProgress(appInfo.getProgress());
+                        //holder.tvDownloadPerSize.setText(appInfo.getDownloadPerSize());
+                        //holder.btnDownload.setProgress(appInfo.getProgress());
                     }
                     break;
 
@@ -584,7 +609,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
                     appInfo.setStatus(AppInfo.STATUS_PAUSED);
                     if (isCurrentListViewItemVisible(position)) {
                         ListViewAdapter.ViewHolder holder = getViewHolder(position);
-                        holder.tvStatus.setText(appInfo.getStatusText());
+                        //holder.tvStatus.setText(appInfo.getStatusText());
                         holder.btnDownload.setText(appInfo.getButtonText());
                     }
                     break;
@@ -594,10 +619,10 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
                     appInfo.setDownloadPerSize(tmpInfo.getDownloadPerSize());
                     if (isCurrentListViewItemVisible(position)) {
                         ListViewAdapter.ViewHolder holder = getViewHolder(position);
-                        holder.tvStatus.setText(appInfo.getStatusText());
+                        //holder.tvStatus.setText(appInfo.getStatusText());
                         holder.btnDownload.setText(appInfo.getButtonText());
-                        holder.progressBar.setProgress(appInfo.getProgress());
-                        holder.tvDownloadPerSize.setText(appInfo.getDownloadPerSize());
+                        holder.btnDownload.setProgress(appInfo.getProgress());
+                        //holder.tvDownloadPerSize.setText(appInfo.getDownloadPerSize());
                     }
                     break;
                 case AppInfo.STATUS_DOWNLOAD_ERROR:
@@ -605,8 +630,8 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
                     appInfo.setDownloadPerSize("");
                     if (isCurrentListViewItemVisible(position)) {
                         ListViewAdapter.ViewHolder holder = getViewHolder(position);
-                        holder.tvStatus.setText(appInfo.getStatusText());
-                        holder.tvDownloadPerSize.setText("");
+                        //holder.tvStatus.setText(appInfo.getStatusText());
+                        //holder.tvDownloadPerSize.setText("");
                         holder.btnDownload.setText(appInfo.getButtonText());
                     }
                     break;

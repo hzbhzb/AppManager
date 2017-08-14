@@ -22,7 +22,10 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
+                android:layout_marginRight="14dp"
                 android:layout_centerVertical="true"
+                android:textColor="@color/white"
+
                 />
         </RelativeLayout>
 
@@ -40,6 +43,17 @@
         android:drawablePadding="10dp"
         android:drawableLeft="@drawable/manager_icon"
         android:textColor="#007C8C"/>
+    <TextView
+        android:id="@+id/ly_version"
+        android:layout_alignParentBottom="true"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="14dp"
+        android:layout_alignParentLeft="true"
+        android:text=""
+        android:drawablePadding="10dp"
+        android:textColor="#007C8C"/>
+
     <LinearLayout
         android:id="@+id/app_layout"
         android:layout_below="@id/ly_title"

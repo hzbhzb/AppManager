@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
@@ -20,6 +21,7 @@ import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -75,7 +77,9 @@ public class AppManagerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         setContentView(R.layout.activity_app_manager);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
@@ -129,11 +133,12 @@ public class AppManagerActivity extends AppCompatActivity {
             myAppInfo.setIcon(icon);
             myAppInfo.setIconResId(info.getIconResource());
             myAppInfo.setSystemApp(true);
-            if (!MyApplication.apkPkgNames.contains(myAppInfo.getPackageName())) {
-                System.out.println("不包含 " + packageName);
-
-                listDatas.add(myAppInfo);
-            }
+            listDatas.add(myAppInfo);
+//            if (!MyApplication.apkPkgNames.contains(myAppInfo.getPackageName())) {
+//                System.out.println("不包含 " + packageName);
+//
+//                listDatas.add(myAppInfo);
+//            }
 
 
         }
@@ -167,16 +172,22 @@ public class AppManagerActivity extends AppCompatActivity {
             //每个页面都是inflate出一个新实例
             GridView gridView = (GridView) inflater.inflate(R.layout.gridview_layout,viewPager,false);
             gridView.setAdapter(new LocalGridViewAdapter(this,listDatas,i,mPageSize));
-            //添加item点击监听
-            /*gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+//            gridView.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View v) {
+//                    recLen = 30;
+//                }
+//            });
+            gridView.setOnTouchListener(new View.OnTouchListener() {
                 @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    int pos = position + currentPage*mPageSize;
-                    Log.i("TAG","position的值为："+position + "-->pos的值为："+pos);
-                    Toast.makeText(MainActivity.this,"你点击了 "+listDatas.get(pos).getProName(),Toast.LENGTH_SHORT).show();
+                public boolean onTouch(View v, MotionEvent event) {
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                        recLen = 31;
+                        //Toast.makeText(AppManagerActivity.this, "click", Toast.LENGTH_SHORT).show();
+                    }
+                    return false;
                 }
-            });*/
-            //每一个GridView作为一个View对象添加到ViewPager集合中
+            });
             viewPagerList.add(gridView);
         }
 
@@ -211,7 +222,7 @@ public class AppManagerActivity extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
-
+                recLen = 30;
                 setImageBackground(0, position);
                 currentPage = position;
 
@@ -222,9 +233,12 @@ public class AppManagerActivity extends AppCompatActivity {
 
             }
         });
+
+
     }
     public void goBack(View v) {
         timer.cancel();
+
         finish();
     }
     TimerTask task = new TimerTask() {

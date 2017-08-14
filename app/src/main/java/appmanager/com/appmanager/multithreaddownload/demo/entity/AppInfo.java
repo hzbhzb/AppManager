@@ -157,25 +157,25 @@ public class AppInfo implements Serializable {
     public String getButtonText() {
         switch (status) {
             case STATUS_NOT_DOWNLOAD:
-                return "Download";
+                return "下载";
             case STATUS_CONNECTING:
-                return "Cancel";
+                return "取消";
             case STATUS_CONNECT_ERROR:
-                return "Try Again";
+                return "重试";
             case STATUS_DOWNLOADING:
-                return "Pause";
+                return "暂停";
             case STATUS_PAUSED:
-                return "Resume";
+                return "继续";
             case STATUS_DOWNLOAD_ERROR:
-                return "Try Again";
+                return "重试";
             case STATUS_COMPLETE:
-                return "Install";
+                return "安装";
             case STATUS_INSTALLED:
-                return "UnInstall";
+                return "卸载";
             case STATUS_RENEWABLE:
-                return "Update";
+                return "升级";
             default:
-                return "Download";
+                return "下载";
         }
     }
 

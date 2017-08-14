@@ -163,7 +163,7 @@ public class ListViewFragment extends Fragment implements OnItemClickListener<Ap
                     appInfo.setStatus(AppInfo.STATUS_CONNECTING);
                     if (isCurrentListViewItemVisible(position)) {
                         ListViewAdapter.ViewHolder holder = getViewHolder(position);
-                        holder.tvStatus.setText(appInfo.getStatusText());
+                       // holder.tvStatus.setText(appInfo.getStatusText());
                         holder.btnDownload.setText(appInfo.getButtonText());
                     }
                     break;
@@ -174,9 +174,9 @@ public class ListViewFragment extends Fragment implements OnItemClickListener<Ap
                     appInfo.setDownloadPerSize(tmpInfo.getDownloadPerSize());
                     if (isCurrentListViewItemVisible(position)) {
                         ListViewAdapter.ViewHolder holder = getViewHolder(position);
-                        holder.tvDownloadPerSize.setText(appInfo.getDownloadPerSize());
-                        holder.progressBar.setProgress(appInfo.getProgress());
-                        holder.tvStatus.setText(appInfo.getStatusText());
+                        //holder.tvDownloadPerSize.setText(appInfo.getDownloadPerSize());
+                        holder.btnDownload.setProgress(appInfo.getProgress());
+                        //holder.tvStatus.setText(appInfo.getStatusText());
                         holder.btnDownload.setText(appInfo.getButtonText());
                     }
                     break;
@@ -195,10 +195,10 @@ public class ListViewFragment extends Fragment implements OnItemClickListener<Ap
 
                     if (isCurrentListViewItemVisible(position)) {
                         ListViewAdapter.ViewHolder holder = getViewHolder(position);
-                        holder.tvStatus.setText(appInfo.getStatusText());
+                        //holder.tvStatus.setText(appInfo.getStatusText());
                         holder.btnDownload.setText(appInfo.getButtonText());
-                        holder.tvDownloadPerSize.setText(appInfo.getDownloadPerSize());
-                        holder.progressBar.setProgress(appInfo.getProgress());
+                        //holder.tvDownloadPerSize.setText(appInfo.getDownloadPerSize());
+                        holder.btnDownload.setProgress(appInfo.getProgress());
                     }
                     break;
 
@@ -206,7 +206,7 @@ public class ListViewFragment extends Fragment implements OnItemClickListener<Ap
                     appInfo.setStatus(AppInfo.STATUS_PAUSED);
                     if (isCurrentListViewItemVisible(position)) {
                         ListViewAdapter.ViewHolder holder = getViewHolder(position);
-                        holder.tvStatus.setText(appInfo.getStatusText());
+                        //holder.tvStatus.setText(appInfo.getStatusText());
                         holder.btnDownload.setText(appInfo.getButtonText());
                     }
                     break;
@@ -216,10 +216,10 @@ public class ListViewFragment extends Fragment implements OnItemClickListener<Ap
                     appInfo.setDownloadPerSize(tmpInfo.getDownloadPerSize());
                     if (isCurrentListViewItemVisible(position)) {
                         ListViewAdapter.ViewHolder holder = getViewHolder(position);
-                        holder.tvStatus.setText(appInfo.getStatusText());
+                       // holder.tvStatus.setText(appInfo.getStatusText());
                         holder.btnDownload.setText(appInfo.getButtonText());
-                        holder.progressBar.setProgress(appInfo.getProgress());
-                        holder.tvDownloadPerSize.setText(appInfo.getDownloadPerSize());
+                        holder.btnDownload.setProgress(appInfo.getProgress());
+                        //holder.tvDownloadPerSize.setText(appInfo.getDownloadPerSize());
                     }
                     break;
                 case AppInfo.STATUS_DOWNLOAD_ERROR:
@@ -227,8 +227,8 @@ public class ListViewFragment extends Fragment implements OnItemClickListener<Ap
                     appInfo.setDownloadPerSize("");
                     if (isCurrentListViewItemVisible(position)) {
                         ListViewAdapter.ViewHolder holder = getViewHolder(position);
-                        holder.tvStatus.setText(appInfo.getStatusText());
-                        holder.tvDownloadPerSize.setText("");
+                       // holder.tvStatus.setText(appInfo.getStatusText());
+                        //holder.tvDownloadPerSize.setText("");
                         holder.btnDownload.setText(appInfo.getButtonText());
                     }
                     break;

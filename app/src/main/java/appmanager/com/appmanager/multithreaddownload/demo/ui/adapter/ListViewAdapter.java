@@ -19,6 +19,7 @@ import appmanager.com.appmanager.R;
 import appmanager.com.appmanager.multithreaddownload.demo.entity.AppInfo;
 import appmanager.com.appmanager.multithreaddownload.demo.listener.OnItemClickListener;
 import appmanager.com.appmanager.multithreaddownload.demo.ui.activity.AppDetailActivity;
+import appmanager.com.appmanager.view.gridpasswordview.ProgressButton;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
@@ -72,9 +73,9 @@ public class ListViewAdapter extends BaseAdapter {
         final AppInfo appInfo = mAppInfos.get(position);
         holder.tvName.setText(appInfo.getName());
         holder.tvVerCode.setText(String.format("版本号: %s", appInfo.getVerCode()));
-        holder.tvDownloadPerSize.setText(appInfo.getDownloadPerSize());
-        holder.tvStatus.setText(appInfo.getStatusText());
-        holder.progressBar.setProgress(appInfo.getProgress());
+        //holder.tvDownloadPerSize.setText(appInfo.getDownloadPerSize());
+        //holder.tvStatus.setText(appInfo.getStatusText());
+        holder.btnDownload.setProgress(appInfo.getProgress());
         holder.btnDownload.setText(appInfo.getButtonText());
         Picasso.with(parent.getContext()).load(appInfo.getImage()).into(holder.ivIcon);
         holder.btnDownload.setOnClickListener(new View.OnClickListener() {
@@ -85,6 +86,14 @@ public class ListViewAdapter extends BaseAdapter {
                 }
             }
         });
+//        holder.progressBar.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (mListener != null) {
+//                    mListener.onItemClick(v, position, appInfo);
+//                }
+//            }
+//        });
 //        convertView.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
@@ -107,16 +116,16 @@ public class ListViewAdapter extends BaseAdapter {
         public TextView tvVerCode;
 
         @Bind(R.id.btnDownload)
-        public Button btnDownload;
+        public ProgressButton btnDownload;
 
-        @Bind(R.id.tvDownloadPerSize)
-        public TextView tvDownloadPerSize;
+//        @Bind(R.id.tvDownloadPerSize)
+//        public TextView tvDownloadPerSize;
+//
+//        @Bind(R.id.tvStatus)
+//        public TextView tvStatus;
 
-        @Bind(R.id.tvStatus)
-        public TextView tvStatus;
-
-        @Bind(R.id.progressBar)
-        public ProgressBar progressBar;
+//        @Bind(R.id.progressBar)
+//        public ProgressBar progressBar;
 
         public ViewHolder(View itemView) {
             ButterKnife.bind(this, itemView);

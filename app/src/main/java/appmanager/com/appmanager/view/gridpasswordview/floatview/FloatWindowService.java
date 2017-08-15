@@ -101,7 +101,7 @@ public class FloatWindowService extends Service {
 	 */
 	private boolean isHome() {
 		if (MyApplication.allApkPkgNames.size() == 0) {
-			System.out.println("allApkPkgName is null");
+			//System.out.println("allApkPkgName is null");
 			return false;
 		}
 		//System.out.println("allApkPkgNames ==" + MyApplication.allApkPkgNames.get(0));

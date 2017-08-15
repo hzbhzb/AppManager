@@ -22,7 +22,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
-                android:layout_marginRight="14dp"
+                android:layout_marginRight="50dp"
                 android:layout_centerVertical="true"
                 android:textColor="@color/white"
 
@@ -36,21 +36,24 @@
         android:layout_below="@id/toolbar"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="14dp"
-
+        android:layout_marginTop="26dp"
+        android:layout_marginLeft="50dp"
         android:layout_alignParentLeft="true"
         android:text="动力加应用管理"
         android:drawablePadding="10dp"
         android:drawableLeft="@drawable/manager_icon"
-        android:textColor="#007C8C"/>
+        android:textColor="#007C8C"
+        android:textSize="20sp"/>
     <TextView
         android:id="@+id/ly_version"
         android:layout_alignParentBottom="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="14dp"
+        android:layout_marginLeft="50dp"
+        android:layout_marginBottom="30dp"
         android:layout_alignParentLeft="true"
         android:text=""
+        android:textSize="16sp"
         android:drawablePadding="10dp"
         android:textColor="#007C8C"/>
 
@@ -84,7 +87,7 @@
         <ImageButton
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="14dp"
+            android:layout_marginRight="50dp"
             android:onClick="goAppList"
             android:background="@color/transparent"
             android:src="@drawable/download_icon"/>

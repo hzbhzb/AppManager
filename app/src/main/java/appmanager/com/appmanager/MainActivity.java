@@ -136,7 +136,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
         TextClock textClock = (TextClock)findViewById(R.id.textClock);
-        textClock.setFormat12Hour("yyyy年mm月dd日 EEEE hh:mm:ss aa");
+        textClock.setFormat12Hour("yyyy年m月dd日   EEEE   hh:mm:ss aa");
         TextView ly_version = (TextView)findViewById(R.id.ly_version);
         ly_version.setText(String.format("版本号%s", getSoftVersion(this)));
 

@@ -6,6 +6,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.ViewPager;
@@ -44,7 +45,7 @@ public class AppManagerActivity extends AppCompatActivity {
     private ImageView[] ivPoints;//小圆点图片集合
     private ViewPager viewPager;
     private int totalPage;//总的页数
-    private int mPageSize = 8;//每页显示的最大数量
+    private int mPageSize = 12;//每页显示的最大数量
     private List<LocalAppInfo> listDatas;//总的数据源
     private List<View> viewPagerList;//GridView作为一个View对象添加到ViewPager集合中
     private int currentPage;//当前页
@@ -233,8 +234,24 @@ public class AppManagerActivity extends AppCompatActivity {
 
             }
         });
-
-
+    }
+    @Override
+    public void onResume() {
+        super.onResume();
+        hideBottomUIMenu();
+    }
+    protected void hideBottomUIMenu() {
+        //隐藏虚拟按键，并且全屏
+        if (Build.VERSION.SDK_INT > 11 && Build.VERSION.SDK_INT < 19) { // lower api
+            View v = this.getWindow().getDecorView();
+            v.setSystemUiVisibility(View.GONE);
+        } else if (Build.VERSION.SDK_INT >= 19) {
+            //for new api versions.
+            View decorView = getWindow().getDecorView();
+            int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_FULLSCREEN;
+            decorView.setSystemUiVisibility(uiOptions);
+        }
     }
     public void goBack(View v) {
         timer.cancel();

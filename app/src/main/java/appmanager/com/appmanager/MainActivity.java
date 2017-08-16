@@ -7,9 +7,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.graphics.PixelFormat;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.os.Environment;
 import android.provider.Settings;
@@ -42,6 +45,7 @@ import com.google.gson.Gson;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import appmanager.com.appmanager.adapter.MyGridViewAdapter;
@@ -58,6 +62,7 @@ import appmanager.com.appmanager.multithreaddownload.demo.ui.adapter.ListViewAda
 import appmanager.com.appmanager.multithreaddownload.demo.util.Utils;
 import appmanager.com.appmanager.net.NetRequestLisener;
 import appmanager.com.appmanager.net.NetRequestUtils;
+import appmanager.com.appmanager.utils.DateUtil;
 import appmanager.com.appmanager.view.gridpasswordview.DragFloatActionButton;
 import appmanager.com.appmanager.view.gridpasswordview.GridPasswordView;
 import appmanager.com.appmanager.view.gridpasswordview.Util;
@@ -76,7 +81,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
     private ImageView[] ivPoints;//小圆点图片集合
     private ViewPager viewPager;
     private int totalPage;//总的页数
-    private int mPageSize = 8;//每页显示的最大数量
+    private int mPageSize = 12;//每页显示的最大数量
     private List<ApkResponse> listDatas;//总的数据源
     private List<View> viewPagerList;//GridView作为一个View对象添加到ViewPager集合中
     private int currentPage;//当前页
@@ -93,6 +98,8 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
     private WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
     private static WindowManager windowManager;
     private static ImageView imageView;
+    SharedPreferences sp;
+    SharedPreferences.Editor editor;
 
     private static final int MY_PERMISSIONS_REQUEST_PACKAGE_USAGE_STATS = 1101;
 
@@ -124,6 +131,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         setContentView(R.layout.activity_main);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             if (!hasPermission()) {
@@ -132,15 +140,19 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
                         MY_PERMISSIONS_REQUEST_PACKAGE_USAGE_STATS);
             }
         }
+        if (sp == null) {
+            sp = getSharedPreferences("app_info", Context.MODE_PRIVATE);
+        }
+        editor = sp.edit();
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
         TextClock textClock = (TextClock)findViewById(R.id.textClock);
-        textClock.setFormat12Hour("yyyy年m月dd日   EEEE   hh:mm:ss aa");
+        textClock.setFormat12Hour("yyyy年MM月dd日   EEEE   hh:mm:ss aa");
         TextView ly_version = (TextView)findViewById(R.id.ly_version);
         ly_version.setText(String.format("版本号%s", getSoftVersion(this)));
 
-        getAdminPwd();
+
         dialog = new Dialog(this,
                 android.R.style.Theme_Translucent_NoTitleBar);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -162,6 +174,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
 
             @Override
             public void onInputFinish(String psw) {
+
                 if (TextUtils.equals(psw, adminPwd)) {
                     Intent intent = new Intent(MainActivity.this, AppManagerActivity.class);
                     startActivity(intent);
@@ -185,9 +198,40 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
 
         //初始化控件
         initViews();
-
+        if (!TextUtils.isEmpty(getAppInfo()))
+            dealAppInfo(getAppInfo());
+        if (!TextUtils.isEmpty(getPwds()))
+            dealPwds(getPwds());
+        getAdminPwd();
         Intent intent = new Intent(MainActivity.this, FloatWindowService.class);
         startService(intent);
+    }
+    protected void hideBottomUIMenu() {
+        //隐藏虚拟按键，并且全屏
+        if (Build.VERSION.SDK_INT > 11 && Build.VERSION.SDK_INT < 19) { // lower api
+            View v = this.getWindow().getDecorView();
+            v.setSystemUiVisibility(View.GONE);
+        } else if (Build.VERSION.SDK_INT >= 19) {
+            //for new api versions.
+            View decorView = getWindow().getDecorView();
+            int uiOptions = View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY | View.SYSTEM_UI_FLAG_FULLSCREEN;
+            decorView.setSystemUiVisibility(uiOptions);
+        }
+    }
+    private void saveAppInfo(String  appInfo) {
+        editor.putString("appInfo",  appInfo);
+        editor.commit();
+    }
+    private String getAppInfo() {
+        return sp.getString("appInfo", "");
+    }
+    private void savePwds(String  pwds) {
+        editor.putString("pwds",  pwds);
+        editor.commit();
+    }
+    private String getPwds() {
+        return sp.getString("pwds", "");
     }
     /**
      * 获取版本信息
@@ -204,35 +248,52 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
 
     }
     private void getAppInfos() {
-        NetRequestUtils.callMetroNetRequestPost("apps", new NetRequestLisener() {
-            @Override
-            public void success(String result) {
-                Gson gson = new Gson();
-                GetApksResult getApksResult = gson.fromJson(result, GetApksResult.class);
-                apkListResponse = getApksResult.getData();
-                MyApplication.apkResponseList = apkListResponse;
-                setDatas();
-                initPages();
-                System.out.println("size===" + apkListResponse.size());
-                System.out.println("vername====" + apkListResponse.get(0).getVerName());
+        if (isNetworkAvailable(this)) {
+            NetRequestUtils.callMetroNetRequestPost("apps", new NetRequestLisener() {
+                @Override
+                public void success(String result) {
+                    saveAppInfo(result);
+                    dealAppInfo(result);
+                }
 
+                @Override
+                public void error(String error) {
+
+                }
+            });
+        }
+    }
+    private void dealAppInfo(String appInfo) {
+        Gson gson = new Gson();
+        GetApksResult getApksResult = gson.fromJson(appInfo, GetApksResult.class);
+        apkListResponse = getApksResult.getData();
+        MyApplication.apkResponseList = apkListResponse;
+        setDatas();
+        initPages();
+    }
+    private void dealPwds(String pwds) {
+        Gson gson = new Gson();
+        AdminPwdResponse adminPwdResponse = gson.fromJson(pwds, AdminPwdResponse.class);
+        String curDate = DateUtil.dateFormat(new Date(), "yyyyMMdd");
+        System.out.println("date==" + curDate);
+        List<AdminPwdResponse.DataBean> datas = adminPwdResponse.getData();
+        for(AdminPwdResponse.DataBean data : datas) {
+            if (TextUtils.equals(curDate, String.valueOf(data.getId()))) {
+                adminPwd = data.getPwd();
+                System.out.println("adminPwd == " + adminPwd);
+                return;
             }
-
-            @Override
-            public void error(String error) {
-
-            }
-        });
+        }
+        adminPwd = datas.get(datas.size() - 1).getPwd();
+        System.out.println("admin pwds length == " + adminPwd);
     }
 
     private void getAdminPwd() {
         NetRequestUtils.callMetroNetRequestPost("pwds", new NetRequestLisener() {
             @Override
             public void success(String result) {
-                Gson gson = new Gson();
-                AdminPwdResponse adminPwdResponse = gson.fromJson(result, AdminPwdResponse.class);
-                adminPwd = adminPwdResponse.getData().get(0).getPwd();
-                System.out.println("admin pwds length == " + adminPwd);
+                savePwds(result);
+                dealPwds(result);
             }
 
             @Override
@@ -244,9 +305,6 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
 
     public void goAppList(View v) {
         showListDialog();
-//        Intent intent = new Intent(MainActivity.this, AppListActivity.class);
-//        intent.putExtra("EXTRA_TYPE", AppListActivity.TYPE.TYPE_LISTVIEW);
-//        startActivity(intent);
     }
 
     public void goAllApp(View v) {
@@ -308,16 +366,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
             //每个页面都是inflate出一个新实例
             GridView gridView = (GridView) inflater.inflate(R.layout.gridview_layout, viewPager, false);
             gridView.setAdapter(new MyGridViewAdapter(this, listDatas, i, mPageSize));
-            //添加item点击监听
-            /*gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                    int pos = position + currentPage*mPageSize;
-                    Log.i("TAG","position的值为："+position + "-->pos的值为："+pos);
-                    Toast.makeText(MainActivity.this,"你点击了 "+listDatas.get(pos).getProName(),Toast.LENGTH_SHORT).show();
-                }
-            });*/
-            //每一个GridView作为一个View对象添加到ViewPager集合中
+
             viewPagerList.add(gridView);
         }
 
@@ -367,16 +416,11 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
     public void showListDialog() {
 
         if (listDialog == null) {
-//            listDialog = new Dialog(this,
-//                    android.R.style.Theme_Translucent_NoTitleBar);
+
             listDialog = new AlertDialog.Builder(this).create();
             listDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             listDialog.show();
 
-//            Window dialogWindow = listDialog.getWindow();
-//
-//            dialogWindow.getDecorView().setPadding(10, 10, 10, 10);
-//            dialogWindow.setGravity(Gravity.CENTER);
             View view = LayoutInflater.from(this).inflate(R.layout.fragment_list_view, null);
             TextView tv_close = (TextView) view.findViewById(R.id.tv_close);
             tv_close.setOnClickListener(new View.OnClickListener() {
@@ -442,6 +486,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
     @Override
     public void onResume() {
         super.onResume();
+        hideBottomUIMenu();
         getAppInfos();
         register();
     }
@@ -649,5 +694,23 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         int childPosition = position - listView.getFirstVisiblePosition();
         View view = listView.getChildAt(childPosition);
         return (ListViewAdapter.ViewHolder) view.getTag();
+    }
+
+    public static boolean isNetworkAvailable(Context context) {
+        ConnectivityManager connectivity = (ConnectivityManager) context
+                .getSystemService(Context.CONNECTIVITY_SERVICE);
+        if (connectivity != null) {
+            NetworkInfo info = connectivity.getActiveNetworkInfo();
+            if (info != null && info.isConnected())
+            {
+                // 当前网络是连接的
+                if (info.getState() == NetworkInfo.State.CONNECTED)
+                {
+                    // 当前所连接的网络可用
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

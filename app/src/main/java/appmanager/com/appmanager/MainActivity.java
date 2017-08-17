@@ -643,7 +643,6 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
                         holder.btnDownload.setProgress(appInfo.getProgress());
                         holder.btnDownload.setText(appInfo.getButtonText());
                         //holder.tvDownloadPerSize.setText(appInfo.getDownloadPerSize());
-
                     }
                     install(appInfo);
                     listDialog.dismiss();

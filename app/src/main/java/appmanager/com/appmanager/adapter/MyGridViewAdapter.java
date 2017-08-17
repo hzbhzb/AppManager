@@ -94,7 +94,7 @@ public class MyGridViewAdapter extends BaseAdapter {
                     Intent intent = Utils.isexit(context, listData.get(pos).getPkg());
                     context.startActivity(intent);
 
-                    Toast.makeText(context,"你点击了 "+listData.get(pos).getName(), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(context,"你点击了 "+listData.get(pos).getName(), Toast.LENGTH_SHORT).show();
                 }
             });
         }else{

@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
         android:background="?attr/colorPrimary"
-        android:title=""
+        android:title="2222"
         app:logo="@drawable/logo" >
 
         <RelativeLayout
@@ -26,6 +26,17 @@
                 android:layout_centerVertical="true"
                 android:textColor="@color/white"
 
+                />
+            <TextView
+                android:id="@+id/tv_pwd_v"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="10dp"
+                android:layout_centerVertical="true"
+                android:textColor="@color/white"
+                android:textSize="10sp"
+                android:text="111111"
                 />
         </RelativeLayout>
 

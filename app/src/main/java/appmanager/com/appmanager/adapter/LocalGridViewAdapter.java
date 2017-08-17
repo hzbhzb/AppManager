@@ -69,7 +69,7 @@ public class LocalGridViewAdapter extends BaseAdapter {
     public View getView(int position, View convertView, ViewGroup parent) {
         LocalGridViewAdapter.ViewHolder holder = null;
         if(convertView == null){
-            convertView = inflater.inflate(R.layout.local_gridview_item,parent,false);
+            convertView = inflater.inflate(R.layout.gridview_item,parent,false);
             holder = new LocalGridViewAdapter.ViewHolder();
             holder.proName = (TextView) convertView.findViewById(R.id.proName);
             holder.imgUrl = (NetworkImageView) convertView.findViewById(R.id.imgUrl);

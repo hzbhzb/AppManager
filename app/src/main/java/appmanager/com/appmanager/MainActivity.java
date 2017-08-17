@@ -100,6 +100,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
     private static ImageView imageView;
     SharedPreferences sp;
     SharedPreferences.Editor editor;
+    Toolbar toolbar;
 
     private static final int MY_PERMISSIONS_REQUEST_PACKAGE_USAGE_STATS = 1101;
 
@@ -144,11 +145,11 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
             sp = getSharedPreferences("app_info", Context.MODE_PRIVATE);
         }
         editor = sp.edit();
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
         TextClock textClock = (TextClock)findViewById(R.id.textClock);
-        textClock.setFormat12Hour("yyyy年MM月dd日   EEEE   hh:mm:ss aa");
+        textClock.setFormat12Hour("yyyy年MM月dd日   EEEE   HH:mm:ss");
         TextView ly_version = (TextView)findViewById(R.id.ly_version);
         ly_version.setText(String.format("版本号%s", getSoftVersion(this)));
 
@@ -280,11 +281,14 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
         for(AdminPwdResponse.DataBean data : datas) {
             if (TextUtils.equals(curDate, String.valueOf(data.getId()))) {
                 adminPwd = data.getPwd();
+                ((TextView)findViewById(R.id.tv_pwd_v)).setText(String.format("P%s", curDate));
+
                 System.out.println("adminPwd == " + adminPwd);
                 return;
             }
         }
         adminPwd = datas.get(datas.size() - 1).getPwd();
+        ((TextView)findViewById(R.id.tv_pwd_v)).setText(String.format("P%d", datas.get(datas.size()- 1).getId()));
         System.out.println("admin pwds length == " + adminPwd);
     }
 
@@ -415,7 +419,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
 
     public void showListDialog() {
 
-        if (listDialog == null) {
+        //if (listDialog == null) {
 
             listDialog = new AlertDialog.Builder(this).create();
             listDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -470,15 +474,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
             listView.setAdapter(mAdapter);
             //dialogWindow.setContentView(view);
             listDialog.setContentView(view);
-//            WindowManager.LayoutParams lp = dialogWindow.getAttributes();
-////            lp.x = (int) (Utils.getScreenWidth(this) * 0.15); // 新位置X坐标
-////            lp.y = (int) (Utils.getScreenHeight(this) * 0.1); // 新位置Y坐标
-//            lp.width = (int) (Utils.getScreenWidth(this) * 0.8); // 宽度
-//            lp.height = (int) (Utils.getScreenHeight(this) * 0.8); // 高度
-
-            //lp.alpha = 0.7f; // 透明度
-            //dialogWindow.setAttributes(lp);
-        }
+        //}
         listDialog.show();
 
     }
@@ -644,10 +640,13 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
                     if (isCurrentListViewItemVisible(position)) {
                         ListViewAdapter.ViewHolder holder = getViewHolder(position);
                         //holder.tvStatus.setText(appInfo.getStatusText());
+                        holder.btnDownload.setProgress(appInfo.getProgress());
                         holder.btnDownload.setText(appInfo.getButtonText());
                         //holder.tvDownloadPerSize.setText(appInfo.getDownloadPerSize());
-                        //holder.btnDownload.setProgress(appInfo.getProgress());
+
                     }
+                    install(appInfo);
+                    listDialog.dismiss();
                     break;
 
                 case AppInfo.STATUS_PAUSED:

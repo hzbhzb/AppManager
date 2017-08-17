@@ -113,7 +113,8 @@ public class ProgressButton extends Button {
             mProgressDrawable.draw(canvas);
 
             if(mProgress==mMaxProgress) {
-                setBackgroundCompat(mProgressDrawable);
+
+                setBackgroundCompat(mNormalDrawable);
                 isFinish = true;
                 if(onFinishListener!=null) {
                     onFinishListener.onFinish();

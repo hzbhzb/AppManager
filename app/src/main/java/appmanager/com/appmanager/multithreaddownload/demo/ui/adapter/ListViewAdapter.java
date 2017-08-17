@@ -75,6 +75,7 @@ public class ListViewAdapter extends BaseAdapter {
         holder.tvVerCode.setText(String.format("版本号: %s", appInfo.getVerCode()));
         //holder.tvDownloadPerSize.setText(appInfo.getDownloadPerSize());
         //holder.tvStatus.setText(appInfo.getStatusText());
+
         holder.btnDownload.setProgress(appInfo.getProgress());
         holder.btnDownload.setText(appInfo.getButtonText());
         Picasso.with(parent.getContext()).load(appInfo.getImage()).into(holder.ivIcon);

@@ -447,7 +447,7 @@ public class MainActivity extends AppCompatActivity implements OnItemClickListen
                     info.setDownloadPerSize(Utils.getDownloadPerSize(downloadInfo.getFinished(), downloadInfo.getLength()));
                     info.setStatus(AppInfo.STATUS_PAUSED);
 
-                    if (Utils.isAppInstalled(this, info.getPackageName())) {
+                    if (Utils.isAppInstalled(this, info.getPackageName()) && downloadInfo.getProgress() == 100) {
                         info.setStatus(AppInfo.STATUS_INSTALLED);
                     } else {
                         info.setStatus(AppInfo.STATUS_PAUSED);
